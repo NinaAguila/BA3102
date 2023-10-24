@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3308
--- Generation Time: Oct 23, 2023 at 05:37 AM
--- Server version: 8.0.18
--- PHP Version: 7.3.12
+-- Host: 127.0.0.1:3306
+-- Generation Time: Oct 24, 2023 at 07:43 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -25,47 +24,95 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbempinfo`
+-- Table structure for table `tbl_admin`
 --
 
-DROP TABLE IF EXISTS `tbempinfo`;
-CREATE TABLE IF NOT EXISTS `tbempinfo` (
-  `empid` int(11) NOT NULL AUTO_INCREMENT,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `department` varchar(30) NOT NULL,
-  PRIMARY KEY (`empid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `tbempinfo`
---
-
-INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
-(1, 'aguila', 'nina', 'cics');
+DROP TABLE IF EXISTS `tbl_admin`;
+CREATE TABLE IF NOT EXISTS `tbl_admin` (
+  `Admin ID` int NOT NULL,
+  `First Name` text NOT NULL,
+  `Last Name` text NOT NULL,
+  `Password` varchar(20) NOT NULL,
+  PRIMARY KEY (`Admin ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tb_studinfo`
+-- Table structure for table `tbl_attendance`
 --
 
-DROP TABLE IF EXISTS `tb_studinfo`;
-CREATE TABLE IF NOT EXISTS `tb_studinfo` (
-  `studid` int(11) NOT NULL AUTO_INCREMENT,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `course` varchar(20) NOT NULL,
-  PRIMARY KEY (`studid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbl_attendance`;
+CREATE TABLE IF NOT EXISTS `tbl_attendance` (
+  `SR-Code` varchar(10) NOT NULL,
+  `Subject Code` varchar(10) NOT NULL,
+  `Building Name` text NOT NULL,
+  `Room No` int NOT NULL,
+  `Unit / Chair` text NOT NULL,
+  `Unit / Chair Number` int NOT NULL,
+  `Faculty Name` text NOT NULL,
+  PRIMARY KEY (`SR-Code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `tb_studinfo`
+-- Table structure for table `tbl_facility`
 --
 
-INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
-(1, 'parker', 'peter', 'bsit'),
-(2, 'kent', 'clark', 'bscs');
+DROP TABLE IF EXISTS `tbl_facility`;
+CREATE TABLE IF NOT EXISTS `tbl_facility` (
+  `Facility ID` int NOT NULL,
+  `Building Name` text NOT NULL,
+  `Room No` int NOT NULL,
+  `Unit No` int NOT NULL,
+  `Chair No` int NOT NULL,
+  PRIMARY KEY (`Facility ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_faculty`
+--
+
+DROP TABLE IF EXISTS `tbl_faculty`;
+CREATE TABLE IF NOT EXISTS `tbl_faculty` (
+  `Faculty ID` int NOT NULL,
+  `First Name` text NOT NULL,
+  `Last Name` text NOT NULL,
+  `Password` varchar(20) NOT NULL,
+  PRIMARY KEY (`Faculty ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_student`
+--
+
+DROP TABLE IF EXISTS `tbl_student`;
+CREATE TABLE IF NOT EXISTS `tbl_student` (
+  `SR-Code` int NOT NULL,
+  `First Name` text NOT NULL,
+  `Last Name` text NOT NULL,
+  `Year and Section` varchar(20) NOT NULL,
+  PRIMARY KEY (`SR-Code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_subject`
+--
+
+DROP TABLE IF EXISTS `tbl_subject`;
+CREATE TABLE IF NOT EXISTS `tbl_subject` (
+  `Subject ID` int NOT NULL,
+  `Subject Code` varchar(10) NOT NULL,
+  `Subject Name` text NOT NULL,
+  PRIMARY KEY (`Subject ID`,`Subject Code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
