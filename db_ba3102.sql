@@ -6,11 +6,12 @@
 -- Generation Time: Oct 23, 2023 at 01:41 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
+CREATE DATABASE IF NOT EXISTS db_ba3102;
+USE db_ba3102;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -18,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `libraryinventorysystem`
+-- Database: `db_ba3102`
 --
 
 -- --------------------------------------------------------
@@ -28,8 +29,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `books` (
-  `bookID` int(11) NOT NULL,
+  `bookID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `title` varchar(255) NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `genre` varchar(255) NOT NULL,
+  `ISBN` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -38,12 +42,12 @@ CREATE TABLE `books` (
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`bookID`, `title`, `description`, `quantity`) VALUES
-(1, 'Book 1', 'Description of Book 1', 61),
-(2, 'Book 2', 'Description of Book 2', 10),
-(3, 'Book 3', 'Description of Book 3', 5),
-(4, 'Book 4', 'Description of Book 4', 20),
-(5, 'Book 5', 'Description of Book 5', 0);
+INSERT INTO `books` (`title`, `author`, `genre`, `ISBN`, `description`, `quantity`) VALUES
+('Book 1', 'Author 1', 'Genre 1', 'ISBN123456', 'Description of Book 1', 10),
+('Book 2', 'Author 2', 'Genre 2', 'ISBN234567', 'Description of Book 2', 15),
+('Book 3', 'Author 3', 'Genre 3', 'ISBN345678', 'Description of Book 3', 8),
+('Book 4', 'Author 4', 'Genre 4', 'ISBN456789', 'Description of Book 4', 20),
+('Book 5', 'Author 5', 'Genre 5', 'ISBN101112', 'Description of Book 5', 20);
 
 -- --------------------------------------------------------
 
@@ -52,7 +56,7 @@ INSERT INTO `books` (`bookID`, `title`, `description`, `quantity`) VALUES
 --
 
 CREATE TABLE `book_transactions` (
-  `transactionID` int(11) NOT NULL,
+  `transactionID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `userID` int(11) NOT NULL,
   `bookID` int(11) NOT NULL,
   `inQuantity` int(11) NOT NULL,
@@ -86,7 +90,7 @@ INSERT INTO `book_transactions` (`transactionID`, `userID`, `bookID`, `inQuantit
 --
 
 CREATE TABLE `users` (
-  `userID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `fullname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -97,69 +101,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`userID`, `fullname`, `email`, `password`, `role`) VALUES
-(1, 'Admin User', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-(2, 'Client User', 'client@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(3, 'Librarian User', 'librarian@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `books`
---
-ALTER TABLE `books`
-  ADD PRIMARY KEY (`bookID`);
-
---
--- Indexes for table `book_transactions`
---
-ALTER TABLE `book_transactions`
-  ADD PRIMARY KEY (`transactionID`),
-  ADD KEY `userID` (`userID`),
-  ADD KEY `bookID` (`bookID`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`userID`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `books`
---
-ALTER TABLE `books`
-  MODIFY `bookID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `book_transactions`
---
-ALTER TABLE `book_transactions`
-  MODIFY `transactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `book_transactions`
---
-ALTER TABLE `book_transactions`
-  ADD CONSTRAINT `book_transactions_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
-  ADD CONSTRAINT `book_transactions_ibfk_2` FOREIGN KEY (`bookID`) REFERENCES `books` (`bookID`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO `users` (`fullname`, `email`, `password`, `role`) VALUES
+('Admin User', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Client User', 'client@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+('Librarian User', 'librarian@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian');
