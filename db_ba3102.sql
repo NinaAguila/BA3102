@@ -35,19 +35,25 @@ CREATE TABLE `books` (
   `genre` varchar(255) NOT NULL,
   `ISBN` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
-  `quantity` int(11) NOT NULL
+  `quantity` int(11) NOT NULL,
+  `publication_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`title`, `author`, `genre`, `ISBN`, `description`, `quantity`) VALUES
-('Book 1', 'Author 1', 'Genre 1', 'ISBN123456', 'Description of Book 1', 10),
-('Book 2', 'Author 2', 'Genre 2', 'ISBN234567', 'Description of Book 2', 15),
-('Book 3', 'Author 3', 'Genre 3', 'ISBN345678', 'Description of Book 3', 8),
-('Book 4', 'Author 4', 'Genre 4', 'ISBN456789', 'Description of Book 4', 20),
-('Book 5', 'Author 5', 'Genre 5', 'ISBN101112', 'Description of Book 5', 20);
+INSERT INTO `books` (`title`, `author`, `genre`, `ISBN`, `description`, `quantity`, `publication_date`) VALUES
+('Book 1', 'Author 1', 'Genre 1', 'ISBN123456', 'Description of Book 1', 10, '2022-01-15'),
+('Book 2', 'Author 2', 'Genre 2', 'ISBN234567', 'Description of Book 2', 15, '2022-02-20'),
+('Book 3', 'Author 3', 'Genre 3', 'ISBN345678', 'Description of Book 3', 8, '2022-03-25'),
+('Book 4', 'Author 1', 'Genre 4', 'ISBN456789', 'Description of Book 4', 20, '2022-04-10'),
+('Book 5', 'Author 1', 'Genre 1', 'ISBN101112', 'Description of Book 5', 20, '2022-05-05'),
+('Book 6', 'Author 1', 'Genre 1', 'ISBN789012', 'Description of Book 6', 15, '2022-06-15'),
+('Book 7', 'Author 2', 'Genre 2', 'ISBN890123', 'Description of Book 7', 12, '2022-07-20'),
+('Book 8', 'Author 2', 'Genre 2', 'ISBN901234', 'Description of Book 8', 18, '2022-08-25'),
+('Book 9', 'Author 2', 'Genre 2', 'ISBN012345', 'Description of Book 9', 25, '2022-09-10'),
+('Book 10', 'Author 3', 'Genre 3', 'ISBN123456', 'Description of Book 10', 10, '2022-10-05');
 
 -- --------------------------------------------------------
 
@@ -68,20 +74,18 @@ CREATE TABLE `book_transactions` (
 -- Dumping data for table `book_transactions`
 --
 
-INSERT INTO `book_transactions` (`transactionID`, `userID`, `bookID`, `inQuantity`, `outQuantity`, `date`) VALUES
-(23, 3, 1, 2, 0, '2023-10-22 09:20:17'),
-(24, 3, 2, 0, 1, '2023-10-22 09:20:23'),
-(25, 3, 3, 1, 0, '2023-10-22 09:20:29'),
-(26, 3, 4, 0, 3, '2023-10-23 04:20:00'),
-(27, 2, 5, 2, 0, '2023-10-23 06:05:00'),
-(28, 3, 1, 4, 0, '2023-10-23 03:14:51'),
-(29, 2, 1, 0, 5, '2023-10-23 03:20:58'),
-(30, 3, 2, 0, 5, '2023-10-23 04:53:56'),
-(31, 3, 1, 1, 0, '2023-10-23 05:08:34'),
-(32, 3, 1, 0, 1, '2023-10-23 05:08:45'),
-(33, 3, 1, 1, 0, '2023-10-23 05:10:03'),
-(34, 3, 1, 0, 1, '2023-10-23 05:12:50'),
-(35, 3, 1, 1, 0, '2023-10-23 05:18:50');
+-- Inserting data into `book_transactions`
+INSERT INTO `book_transactions` (`userID`, `bookID`, `inQuantity`, `outQuantity`, `date`) VALUES
+(2, 6, 2, 0, '2023-11-02 09:20:17'),
+(3, 7, 0, 1, '2023-11-02 09:20:23'),
+(2, 8, 1, 0, '2023-11-02 09:20:29'),
+(3, 9, 0, 3, '2023-11-03 04:20:00'),
+(3, 10, 2, 0, '2023-11-03 06:05:00'),
+(3, 11, 4, 0, '2023-11-03 03:14:51'),
+(2, 12, 0, 5, '2023-11-03 03:20:58'),
+(3, 13, 0, 5, '2023-11-03 04:53:56'),
+(3, 14, 1, 0, '2023-11-03 05:08:34'),
+(3, 15, 0, 1, '2023-11-03 05:08:45');
 
 -- --------------------------------------------------------
 
