@@ -36,7 +36,7 @@ CREATE TABLE `books` (
   `ISBN` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
   `quantity` int(11) NOT NULL,
-  `publication_date` date DEFAULT NULL
+  `publication_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
