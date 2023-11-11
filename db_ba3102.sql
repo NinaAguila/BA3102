@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 05, 2023 at 11:51 PM
+-- Generation Time: Nov 11, 2023 at 10:55 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -148,6 +148,75 @@ INSERT INTO `locations` (`locationId`, `locationName`, `locationDescription`) VA
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `login_logout_log`
+--
+
+DROP TABLE IF EXISTS `login_logout_log`;
+CREATE TABLE IF NOT EXISTS `login_logout_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `userRole` varchar(255) NOT NULL,
+  `event_type` enum('login','logout') NOT NULL,
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `login_logout_log`
+--
+
+INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
+(1, 'admin', 'admin', 'login', '2023-11-06 13:59:09'),
+(2, 'admin', 'admin', 'login', '2023-11-06 14:01:11'),
+(3, 'admin', 'admin', 'logout', '2023-11-06 14:01:12'),
+(4, 'Equipment adder', 'equipment adder', 'login', '2023-11-06 14:01:22'),
+(5, 'Equipment adder', 'equipment adder', 'logout', '2023-11-06 14:01:24'),
+(6, 'admin', 'admin', 'login', '2023-11-06 14:01:28'),
+(7, 'admin', 'admin', 'logout', '2023-11-06 14:16:23'),
+(8, 'admin', 'admin', 'login', '2023-11-06 14:16:31'),
+(9, 'admin', 'admin', 'logout', '2023-11-06 14:18:28'),
+(10, 'admin', 'admin', 'login', '2023-11-06 14:18:33'),
+(11, 'admin', 'admin', 'logout', '2023-11-06 14:18:59'),
+(12, 'equipment adder', 'equipment adder', 'login', '2023-11-06 14:19:06'),
+(13, 'equipment adder', 'equipment adder', 'logout', '2023-11-06 14:19:09'),
+(14, 'admin', 'admin', 'login', '2023-11-06 14:19:14'),
+(15, 'admin', 'admin', 'login', '2023-11-06 02:22:00'),
+(16, 'admin', 'admin', 'logout', '2023-11-06 02:23:00'),
+(17, 'admin', 'admin', 'login', '2023-11-06 02:23:00'),
+(18, 'admin', 'admin', 'login', '2023-11-06 22:26:50'),
+(19, 'admin', 'admin', 'logout', '2023-11-06 22:27:09'),
+(20, 'admin', 'admin', 'login', '2023-11-06 22:28:06'),
+(21, 'admin', 'admin', 'login', '2023-11-06 22:40:30'),
+(22, 'admin', 'admin', 'logout', '2023-11-07 09:45:27'),
+(23, 'equipment remover', 'equipment remover', 'login', '2023-11-07 09:45:36'),
+(24, 'equipment remover', 'equipment remover', 'logout', '2023-11-07 09:47:29'),
+(25, 'equipment adder', 'equipment adder', 'login', '2023-11-07 09:47:37'),
+(26, 'equipment adder', 'equipment adder', 'logout', '2023-11-07 09:53:44'),
+(27, 'admin', 'admin', 'login', '2023-11-07 09:53:50'),
+(28, 'admin', 'admin', 'logout', '2023-11-07 14:02:09'),
+(29, 'equipment remover', 'equipment remover', 'login', '2023-11-07 14:02:29'),
+(30, 'equipment remover', 'equipment remover', 'logout', '2023-11-07 14:02:55'),
+(31, 'equipment adder', 'equipment adder', 'login', '2023-11-07 14:03:03'),
+(32, 'equipment adder', 'equipment adder', 'logout', '2023-11-07 14:04:35'),
+(33, 'equipment adder', 'equipment adder', 'login', '2023-11-07 14:04:45'),
+(34, 'equipment adder', 'equipment adder', 'logout', '2023-11-07 14:04:54'),
+(35, 'equipment remover', 'equipment remover', 'login', '2023-11-07 14:05:04'),
+(36, 'equipment remover', 'equipment remover', 'logout', '2023-11-07 14:08:22'),
+(37, 'admin', 'admin', 'login', '2023-11-07 14:08:27'),
+(38, 'admin', 'admin', 'login', '2023-11-07 15:16:47'),
+(39, 'admin', 'admin', 'logout', '2023-11-07 15:18:40'),
+(40, 'equipment adder', 'equipment adder', 'login', '2023-11-07 15:18:50'),
+(41, 'equipment adder', 'equipment adder', 'logout', '2023-11-07 15:19:11'),
+(42, 'equipment remover', 'equipment remover', 'login', '2023-11-07 15:19:21'),
+(43, 'admin', 'admin', 'login', '2023-11-07 19:17:22'),
+(44, 'admin', 'admin', 'login', '2023-11-07 19:29:07'),
+(45, 'admin', 'admin', 'logout', '2023-11-07 20:19:28'),
+(46, 'admin', 'admin', 'login', '2023-11-07 20:19:55'),
+(47, 'admin', 'admin', 'login', '2023-11-09 15:24:12');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -158,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `userRole` varchar(255) NOT NULL,
   `passwordHash` varchar(255) NOT NULL,
   PRIMARY KEY (`userId`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
