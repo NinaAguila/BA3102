@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 24, 2023 at 06:15 AM
+-- Generation Time: Nov 19, 2023 at 01:02 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -21,27 +21,230 @@ SET time_zone = "+00:00";
 -- Database: `db_ba3102`
 --
 
--- --------------------------------------------------------
-
+DELIMITER $$
 --
--- Table structure for table `tbempinfo`
+-- Procedures
 --
+DROP PROCEDURE IF EXISTS `SP_CreateStaff`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CreateStaff` (IN `id` VARCHAR(30), IN `fname` VARCHAR(50), IN `mname` VARCHAR(50), IN `lname` VARCHAR(50), IN `number` VARCHAR(13), IN `position` VARCHAR(100))   INSERT INTO tbl_staff (StaffID, FirstName, MiddleName, LastName, ContactNumber, Position)
+VALUES (id, fname, mname, lname, number, position)$$
 
-DROP TABLE IF EXISTS `tbempinfo`;
-CREATE TABLE IF NOT EXISTS `tbempinfo` (
-  `empid` int NOT NULL AUTO_INCREMENT,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `department` varchar(30) NOT NULL,
-  PRIMARY KEY (`empid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP PROCEDURE IF EXISTS `SP_DeleteViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DeleteViolationReport` (IN `inputViolationID` INT)   BEGIN
+    DELETE FROM tbl_violationreport WHERE ViolationID = inputViolationID;
+END$$
 
---
--- Dumping data for table `tbempinfo`
---
+DROP PROCEDURE IF EXISTS `SP_GetAdminAccount`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetAdminAccount` (IN `inputStaffId` VARCHAR(255))   BEGIN
+    SELECT 
+        tbl_adminaccount.AdminID, 
+        tbl_adminaccount.StaffID, 
+        tbl_staff.FirstName, 
+        tbl_staff.MiddleName, 
+        tbl_staff.LastName, 
+        tbl_staff.ContactNumber, 
+        tbl_staff.Position, 
+        tbl_adminaccount.PasswordEncrypted 
+    FROM tbl_adminaccount
+    INNER JOIN tbl_staff ON tbl_adminaccount.StaffID = tbl_staff.StaffID
+    WHERE tbl_adminaccount.StaffId = inputStaffId;
+END$$
 
-INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
-(1, 'aguila', 'nina', 'cics');
+DROP PROCEDURE IF EXISTS `SP_GetAppeals`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetAppeals` (IN `sortOption` VARCHAR(255))   BEGIN
+SELECT AppealID,  tbl_violationreport.ViolationID, tbl_students.SRCode, CONCAT(tbl_students.FirstName, ' ', SUBSTRING(tbl_students.MiddleName, 1, 1), '. ', tbl_students.LastName) AS Name, ViolationName, Department, CourseName, tbl_appeal.Date AS AppealDate, ViolationName, ViolationDate, ViolationTime, CONCAT(tbl_staff.FirstName, ' ', SUBSTRING(tbl_staff.MiddleName, 1, 1), '. ', tbl_staff.LastName) AS StaffName, Remarks, Appeal, Evidence, Status
+    FROM tbl_appeal
+    INNER JOIN tbl_violationreport ON tbl_appeal.ViolationID = tbl_violationreport.ViolationID
+    INNER JOIN tbl_students ON tbl_violationreport.SRCode = tbl_students.SRCode
+    INNER JOIN tbl_violationtypes ON tbl_violationreport.ViolationTypeID = tbl_violationtypes.ViolationTypeID
+    INNER JOIN tbl_course ON tbl_students.CourseID = tbl_course.CourseID
+    INNER JOIN tbl_staff ON tbl_violationreport.StaffID = tbl_staff.StaffID
+    ORDER BY
+        CASE
+            WHEN sortOption = 'option1' THEN ViolationName
+            WHEN sortOption = 'option2' THEN Name
+            ELSE AppealID
+        END;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetFirstOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetFirstOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT FirstOffense
+    FROM tbl_violationtypes
+    WHERE ViolationTypeID = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetSecondOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetSecondOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT SecondOffense
+    FROM tbl_violationtypes
+    WHERE ViolationTypeID = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentAccount`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentAccount` (IN `inputSRCode` VARCHAR(255))   BEGIN
+    SELECT 
+        tbl_studentaccount.UserID, 
+        tbl_studentaccount.SRCode, 
+        tbl_studentaccount.PasswordEncrypted, 
+        tbl_students.FirstName, 
+        tbl_students.MiddleName, 
+        tbl_students.LastName, 
+        tbl_course.CourseName, 
+        tbl_course.Department 
+    FROM tbl_studentaccount
+    INNER JOIN tbl_students ON tbl_studentaccount.SRCode = tbl_students.SRCode
+    INNER JOIN tbl_course ON tbl_students.CourseID = tbl_course.CourseID
+    WHERE tbl_studentaccount.SRCode = inputSRCode;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentData`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentData` (IN `srCodeParam` VARCHAR(255))   BEGIN
+    SELECT CONCAT(FirstName, ' ', LEFT(MiddleName, 1), '. ', LastName) AS Name, CourseName, Department 
+    FROM tbl_students 
+    INNER JOIN tbl_course ON tbl_students.CourseID = tbl_course.CourseID 
+    WHERE SRCode = srCodeParam;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentwithViolation`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentwithViolation` (IN `id` VARCHAR(30), IN `password` VARCHAR(255))   SELECT 
+    tbl_studentaccount.UserID, 
+    tbl_studentaccount.SRCode, 
+    tbl_studentaccount.PasswordEncrypted, 
+    tbl_students.FirstName, 
+    tbl_students.MiddleName, 
+    tbl_students.LastName, 
+    tbl_course.CourseName, 
+    tbl_course.Department, 
+    tbl_violationtypes.ViolationLevel 
+FROM 
+    tbl_studentaccount 
+INNER JOIN 
+    tbl_students ON tbl_studentaccount.SRCode = tbl_students.SRCode 
+INNER JOIN 
+    tbl_course ON tbl_students.CourseID = tbl_course.CourseID 
+INNER JOIN 
+    tbl_violationreport ON tbl_students.SRCode = tbl_violationreport.SRCode 
+INNER JOIN 
+    tbl_violationtypes ON tbl_violationreport.ViolationTypeID = tbl_violationtypes.ViolationTypeID 
+WHERE 
+    tbl_studentaccount.SRCode = id 
+AND 
+    tbl_studentaccount.PasswordEncrypted = password$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentwithViolation2`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentwithViolation2` (IN `id` VARCHAR(30), IN `password` VARCHAR(255))   SELECT DISTINCT
+    tbl_studentaccount.UserID, 
+    tbl_studentaccount.SRCode, 
+    tbl_studentaccount.PasswordEncrypted, 
+    tbl_students.FirstName, 
+    tbl_students.MiddleName, 
+    tbl_students.LastName, 
+    tbl_course.CourseName, 
+    tbl_course.Department, 
+    tbl_violationtypes.ViolationLevel 
+FROM 
+    tbl_studentaccount 
+INNER JOIN 
+    tbl_students ON tbl_studentaccount.SRCode = tbl_students.SRCode 
+INNER JOIN 
+    tbl_course ON tbl_students.CourseID = tbl_course.CourseID 
+INNER JOIN 
+    tbl_violationreport ON tbl_students.SRCode = tbl_violationreport.SRCode 
+INNER JOIN 
+    tbl_violationtypes ON tbl_violationreport.ViolationTypeID = tbl_violationtypes.ViolationTypeID 
+WHERE 
+    tbl_studentaccount.SRCode = id
+AND 
+    tbl_studentaccount.PasswordEncrypted = password$$
+
+DROP PROCEDURE IF EXISTS `SP_GetThirdOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetThirdOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT ThirdOffense
+    FROM tbl_violationtypes
+    WHERE ViolationTypeID = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetViolationReport` (IN `p_SRCode` VARCHAR(255), IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT *
+    FROM tbl_violationreport
+    WHERE SRCode = p_SRCode AND ViolationTypeID = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetViolationTypes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetViolationTypes` ()   BEGIN
+    SELECT ViolationTypeID, ViolationName FROM tbl_violationtypes;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_InsertViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_InsertViolationReport` (IN `p_SRCode` VARCHAR(255), IN `p_StaffID` VARCHAR(255), IN `p_ViolationTypeID` INT, IN `p_ViolationDate` DATE, IN `p_ViolationTime` TIME, IN `p_Remarks` VARCHAR(255), IN `p_Evidence` VARCHAR(255), IN `p_Status` VARCHAR(255))   BEGIN
+    INSERT INTO tbl_violationreport (SRCode, StaffID, ViolationTypeID, ViolationDate, ViolationTime, Remarks, Evidence, Status)
+    VALUES (p_SRCode, p_StaffID, p_ViolationTypeID, p_ViolationDate, p_ViolationTime, p_Remarks, p_Evidence, p_Status);
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_Student`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_Student` (IN `sr` VARCHAR(30))   SELECT 
+    CONCAT(FirstName, ' ', IF(LENGTH(MiddleName) > 0, CONCAT(SUBSTRING(MiddleName, 1, 1), '.'), ''), ' ', LastName) AS `FullName`,
+    tbl_students.SRCode
+FROM tbl_students
+WHERE tbl_students.SRCode = sr$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentAppeal`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentAppeal` (IN `id` INT, IN `date` DATE, IN `message` VARCHAR(255))   INSERT INTO tbl_appeal (ViolationID, Date, Appeal)
+VALUES (id, date, message)$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentViolationCarousel`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentViolationCarousel` (IN `sr` VARCHAR(30))   SELECT 
+	tbl_violationreport.ViolationID,
+    tbl_violationtypes.ViolationName,
+    tbl_violationtypes.ViolationLevel,
+    tbl_violationreport.ViolationDate, 
+    tbl_violationreport.ViolationTime, 
+    tbl_violationreport.Remarks,
+    tbl_violationreport.Status,
+    tbl_violationreport.Evidence 
+FROM tbl_violationreport
+INNER JOIN tbl_violationtypes ON tbl_violationreport.ViolationTypeID = tbl_violationtypes.ViolationTypeID
+INNER JOIN tbl_students ON tbl_violationreport.SRCode = tbl_students.SRCode
+WHERE tbl_students.SRCode = sr$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentViolationTypeCounter`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentViolationTypeCounter` (IN `sr` VARCHAR(30))   SELECT
+	SUM(CASE WHEN ViolationLevel = 'Minor' THEN 1 ELSE 0 END) AS MinorViolations,
+	SUM(CASE WHEN ViolationLevel = 'Major' THEN 1 ELSE 0 END) AS MajorViolations
+FROM
+	tbl_violationtypes
+INNER JOIN tbl_violationreport ON tbl_violationtypes.ViolationTypeID = tbl_violationreport.ViolationTypeID
+INNER JOIN tbl_students ON tbl_violationreport.SRCode = tbl_students.SRCode
+WHERE
+	tbl_students.SRCode = sr$$
+
+DROP PROCEDURE IF EXISTS `SP_StudHomepage`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudHomepage` (IN `sr` VARCHAR(30))   SELECT 
+    CONCAT(FirstName, ' ', IF(LENGTH(MiddleName) > 0, CONCAT(SUBSTRING(MiddleName, 1, 1), '.'), ''), ' ', LastName) AS `FullName`,
+    tbl_students.SRCode, tbl_course.CourseName, tbl_course.Department
+FROM tbl_students
+INNER JOIN tbl_course ON tbl_students.CourseID = tbl_course.CourseID
+WHERE tbl_students.SRCode = sr$$
+
+DROP PROCEDURE IF EXISTS `SP_StudViolationCarousel`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudViolationCarousel` (IN `sr` VARCHAR(30))   SELECT 
+	tbl_violationreport.ViolationID,
+    tbl_violationtypes.ViolationName,
+    tbl_violationtypes.ViolationLevel,
+    tbl_callslip.Action,
+    tbl_violationreport.ViolationDate,
+    tbl_violationreport.ViolationTime,
+    tbl_violationreport.Remarks,
+    tbl_violationreport.Evidence
+FROM tbl_violationreport
+INNER JOIN tbl_violationtypes ON tbl_violationreport.ViolationTypeID = tbl_violationtypes.ViolationTypeID
+INNER JOIN tbl_students ON tbl_students.SRCode = tbl_violationreport.SRCode
+INNER JOIN tbl_callslip ON tbl_callslip.ViolationID = tbl_violationreport.ViolationID
+WHERE tbl_students.SRCode = sr$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -52,55 +255,49 @@ INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
 DROP TABLE IF EXISTS `tbl_adminaccount`;
 CREATE TABLE IF NOT EXISTS `tbl_adminaccount` (
   `AdminID` int NOT NULL AUTO_INCREMENT,
-  `StaffID` varchar(30) NOT NULL,
-  `PasswordEncrypted` varchar(255) NOT NULL,
-  `PermissionLevel` varchar(10) NOT NULL,
+  `StaffID` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `PasswordEncrypted` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`AdminID`),
   KEY `StaffID_fk_AdminAccount` (`StaffID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_adminaccount`
 --
 
-INSERT INTO `tbl_adminaccount` (`AdminID`, `StaffID`, `PasswordEncrypted`, `PermissionLevel`) VALUES
-(1, 's1-23', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n', 'High'),
-(2, 's2-22', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n', 'Admin'),
-(3, 's3-22', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n', 'Low'),
-(4, 's4-21', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n', 'High'),
-(5, 's5-28', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n', 'Admin');
+INSERT INTO `tbl_adminaccount` (`AdminID`, `StaffID`, `PasswordEncrypted`) VALUES
+(2, 's2-22', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
+(3, 's3-22', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
+(4, 's4-21', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
+(5, 's5-28', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
+(8, 's1-23', '$2y$10$n0pZWJxXGQUkTZpOevB5/u48DIBglIqgp3zJk7CREuGtZ7fyjS3MO');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_callslip`
+-- Table structure for table `tbl_appeal`
 --
 
-DROP TABLE IF EXISTS `tbl_callslip`;
-CREATE TABLE IF NOT EXISTS `tbl_callslip` (
-  `CallSlipID` int NOT NULL AUTO_INCREMENT,
-  `SRCode` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `StaffID` varchar(30) NOT NULL,
-  `CreationDate` date NOT NULL,
-  `CallDate` date NOT NULL,
-  `CallTime` time NOT NULL,
-  `Action` varchar(255) NOT NULL,
-  `Remarks` varchar(255) NOT NULL,
-  PRIMARY KEY (`CallSlipID`),
-  KEY `SRCode_fk_CallSlip` (`SRCode`),
-  KEY `StaffID_fk_CallSlip` (`StaffID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbl_appeal`;
+CREATE TABLE IF NOT EXISTS `tbl_appeal` (
+  `AppealID` int NOT NULL AUTO_INCREMENT,
+  `ViolationID` int NOT NULL,
+  `Date` date NOT NULL,
+  `Appeal` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`AppealID`),
+  KEY `ViolationID_fk_Appeal` (`ViolationID`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `tbl_callslip`
+-- Dumping data for table `tbl_appeal`
 --
 
-INSERT INTO `tbl_callslip` (`CallSlipID`, `SRCode`, `StaffID`, `CreationDate`, `CallDate`, `CallTime`, `Action`, `Remarks`) VALUES
-(1, '21-31092', 's1-23', '2023-10-24', '2023-10-25', '12:05:34', 'Three- to five-day suspension', ''),
-(2, '21-35876', 's2-22', '2023-10-24', '2023-10-25', '10:05:34', 'Five- to seven-day suspension, may include re-admission probation', ''),
-(3, '21-39479', 's3-22', '2023-10-23', '2023-10-24', '10:08:10', 'Seven- to nine-day suspension, may\r\ninclude Non-readmission', ''),
-(4, '21-39841', 's4-21', '2023-10-22', '2023-10-23', '15:08:10', 'Written Warning', ''),
-(5, '21-87123', 's5-28', '2023-10-17', '2023-10-18', '11:09:19', 'Written Reprimand', '');
+INSERT INTO `tbl_appeal` (`AppealID`, `ViolationID`, `Date`, `Appeal`) VALUES
+(1, 6, '2023-11-12', 'Di naman po ako yan! Fake News!!!!'),
+(2, 5, '2023-11-03', 'Good day po! Concern ko lang po na baka sala po ang type nyo ng SR Code. Di po ako ang nabigyan ng violation kanina'),
+(3, 2, '2023-11-03', 'I believe po ay mali po ang verdict sa akin regarding sa case na ito'),
+(4, 7, '2023-11-03', 'Mali po ang nabigay sa akin na violation'),
+(7, 3, '2023-11-14', 'Culture');
 
 -- --------------------------------------------------------
 
@@ -111,10 +308,10 @@ INSERT INTO `tbl_callslip` (`CallSlipID`, `SRCode`, `StaffID`, `CreationDate`, `
 DROP TABLE IF EXISTS `tbl_course`;
 CREATE TABLE IF NOT EXISTS `tbl_course` (
   `CourseID` int NOT NULL AUTO_INCREMENT,
-  `CourseName` varchar(255) NOT NULL,
-  `Department` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CourseName` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Department` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`CourseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_course`
@@ -135,14 +332,14 @@ INSERT INTO `tbl_course` (`CourseID`, `CourseName`, `Department`) VALUES
 
 DROP TABLE IF EXISTS `tbl_staff`;
 CREATE TABLE IF NOT EXISTS `tbl_staff` (
-  `StaffID` varchar(30) NOT NULL,
-  `FirstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `MiddleName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `LastName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `ContactNumber` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `StaffID` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `FirstName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MiddleName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LastName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ContactNumber` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Position` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`StaffID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_staff`
@@ -153,7 +350,8 @@ INSERT INTO `tbl_staff` (`StaffID`, `FirstName`, `MiddleName`, `LastName`, `Cont
 ('s2-22', 'Bianca', 'Solares', 'Bustamante', '09126576871', 'Lecturer'),
 ('s3-22', 'Rick', 'Lopez', 'Mentoy', '09675455211', 'Lecturer'),
 ('s4-21', 'Juan', 'Dela Cruz', 'Cruz', '09099292131', 'Lecturer'),
-('s5-28', 'Melissa', 'Escueta', 'Tapalla', '09080706051', 'Lecturer');
+('s5-28', 'Melissa', 'Escueta', 'Tapalla', '09080706051', 'Lecturer'),
+('s6-20', 'John', 'Doe', 'Morgan', '09090807123', 'Dean');
 
 -- --------------------------------------------------------
 
@@ -164,11 +362,11 @@ INSERT INTO `tbl_staff` (`StaffID`, `FirstName`, `MiddleName`, `LastName`, `Cont
 DROP TABLE IF EXISTS `tbl_studentaccount`;
 CREATE TABLE IF NOT EXISTS `tbl_studentaccount` (
   `UserID` int NOT NULL AUTO_INCREMENT,
-  `SRCode` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `PasswordEncrypted` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `SRCode` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `PasswordEncrypted` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`UserID`),
   KEY `SRCode_fk_User` (`SRCode`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_studentaccount`
@@ -177,9 +375,10 @@ CREATE TABLE IF NOT EXISTS `tbl_studentaccount` (
 INSERT INTO `tbl_studentaccount` (`UserID`, `SRCode`, `PasswordEncrypted`) VALUES
 (1, '21-31092', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
 (2, '21-35876', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
-(3, '21-39479', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
-(4, '21-39841', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
-(5, '21-87123', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n');
+(4, '21-39841', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\n'),
+(5, '21-87123', '$2y$10$.vGA1O9wmRjrwAVXD98HNOgsNpDczlqm3Jq7KnEd1rVAGv3Fykk1a\r\n'),
+(10, '21-39479', '$2y$10$n0pZWJxXGQUkTZpOevB5/u48DIBglIqgp3zJk7CREuGtZ7fyjS3MO'),
+(11, '21-36339', '$2y$10$q.9QnTuJWpDAeyTA0/uNX.WVePihuZC1QeUCjtVp47BXr4nZz33p6');
 
 -- --------------------------------------------------------
 
@@ -189,14 +388,14 @@ INSERT INTO `tbl_studentaccount` (`UserID`, `SRCode`, `PasswordEncrypted`) VALUE
 
 DROP TABLE IF EXISTS `tbl_students`;
 CREATE TABLE IF NOT EXISTS `tbl_students` (
-  `SRCode` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `FirstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `MiddleName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `LastName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `SRCode` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `FirstName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MiddleName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LastName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `CourseID` int NOT NULL,
   PRIMARY KEY (`SRCode`),
   KEY `CourseID_fk_Students` (`CourseID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_students`
@@ -204,7 +403,11 @@ CREATE TABLE IF NOT EXISTS `tbl_students` (
 
 INSERT INTO `tbl_students` (`SRCode`, `FirstName`, `MiddleName`, `LastName`, `CourseID`) VALUES
 ('21-31092', 'Schwartz', 'Sevilla', 'Hirang', 2),
+('21-31662', 'Sofia Mae', '', 'Pepito', 1),
+('21-33470', 'Emjay', 'A', 'Rongavilla', 1),
 ('21-35876', 'Santiago', 'Dela Cruz', 'Ensaimada', 4),
+('21-36339', 'Jhon Kyle', 'Pardillo', 'Ilao', 1),
+('21-38628', 'Raniella', 'R', 'Cuevas', 1),
 ('21-39479', 'Cyrus', 'Escueta', 'Tapalla', 1),
 ('21-39841', 'Kim Paolo', 'Roxas', 'Cuenca', 1),
 ('21-87123', 'Jose', 'Escobar', 'Feliz', 3);
@@ -218,29 +421,34 @@ INSERT INTO `tbl_students` (`SRCode`, `FirstName`, `MiddleName`, `LastName`, `Co
 DROP TABLE IF EXISTS `tbl_violationreport`;
 CREATE TABLE IF NOT EXISTS `tbl_violationreport` (
   `ViolationID` int NOT NULL AUTO_INCREMENT,
-  `SRCode` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `StaffID` varchar(30) NOT NULL,
+  `SRCode` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `StaffID` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ViolationTypeID` int NOT NULL,
   `ViolationDate` date NOT NULL,
   `ViolationTime` time NOT NULL,
-  `Remarks` varchar(255) NOT NULL,
-  `Evidence` blob NOT NULL,
+  `Remarks` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Evidence` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ViolationID`),
   KEY `ViolationTypeID_fk_ViolationReport` (`ViolationTypeID`),
-  KEY `StaffID_fk_ViolationReport` (`StaffID`),
-  KEY `SRCode_fk_ViolationReport` (`SRCode`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `SRCode_fk_ViolationReport` (`SRCode`),
+  KEY `StaffID_fk_ViolationReport` (`StaffID`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_violationreport`
 --
 
-INSERT INTO `tbl_violationreport` (`ViolationID`, `SRCode`, `StaffID`, `ViolationTypeID`, `ViolationDate`, `ViolationTime`, `Remarks`, `Evidence`) VALUES
-(1, '21-31092', 's1-23', 1, '2023-10-11', '13:19:12', '', ''),
-(2, '21-35876', 's2-22', 2, '2023-10-04', '08:02:19', 'Smoke 3 cigarettes in total\r\n', ''),
-(3, '21-39479', 's3-22', 3, '2023-10-18', '10:03:11', 'Conduct a mass gambling inside the school', ''),
-(4, '21-39841', 's4-21', 4, '2023-10-20', '13:03:11', '', ''),
-(5, '21-87123', 's5-28', 5, '2023-10-23', '17:04:16', '', '');
+INSERT INTO `tbl_violationreport` (`ViolationID`, `SRCode`, `StaffID`, `ViolationTypeID`, `ViolationDate`, `ViolationTime`, `Remarks`, `Evidence`, `Status`) VALUES
+(1, '21-39479', 's1-23', 1, '2023-10-18', '23:18:00', 'Three- to five-day suspension (3-5)', '6550d16d20d71.jpg', 'Done'),
+(2, '21-87123', 's1-23', 4, '2023-11-12', '21:21:00', 'Written Warning', '6550d24a63bf4.jpg', 'Done'),
+(3, '21-39479', 's1-23', 6, '2023-11-12', '21:27:00', 'Written Reprimand', '6550d2c6623a9.jpg', 'Ongoing'),
+(4, '21-39479', 's1-23', 6, '2023-11-12', '21:27:00', 'Written Reprimand to One-day suspension', '6550d2d46a0c2.jpg', 'Ongoing'),
+(5, '21-31662', 's1-23', 7, '2023-11-12', '21:29:00', 'Written Reprimand', '6550d34889972.png', 'Done'),
+(6, '21-38628', 's1-23', 7, '2023-11-12', '21:29:00', 'Written Reprimand', '6550d3b30990a.png', 'Ongoing'),
+(7, '21-39841', 's1-23', 2, '2023-11-12', '21:31:00', 'Three- to five-day suspension (3-5)', '6550d3f713438.jpg', 'Done'),
+(8, '21-39479', 's1-23', 3, '2023-11-12', '21:32:00', 'Three- to five-day suspension (3-5)', '6550d445b42cb.jpg', 'Ongoing'),
+(23, '21-36339', 's1-23', 6, '2023-11-13', '11:31:00', 'Written Reprimand', '655198b18a0bb.jpg', 'Done');
 
 -- --------------------------------------------------------
 
@@ -251,45 +459,38 @@ INSERT INTO `tbl_violationreport` (`ViolationID`, `SRCode`, `StaffID`, `Violatio
 DROP TABLE IF EXISTS `tbl_violationtypes`;
 CREATE TABLE IF NOT EXISTS `tbl_violationtypes` (
   `ViolationTypeID` int NOT NULL AUTO_INCREMENT,
-  `ViolationName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `ViolationLevel` varchar(10) NOT NULL,
-  `Description` varchar(255) NOT NULL,
+  `ViolationName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ViolationLevel` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `FirstOffense` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SecondOffense` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ThirdOffense` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`ViolationTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_violationtypes`
 --
 
-INSERT INTO `tbl_violationtypes` (`ViolationTypeID`, `ViolationName`, `ViolationLevel`, `Description`) VALUES
-(1, 'Intoxication of Alcohol', 'Major', 'Possession of and/or intoxication with alcoholic\r\nbeverages within University premises or during any\r\noff-campus University-sponsored activities.'),
-(2, 'Smoking', 'Major', 'Smoking anytime within University premises. '),
-(3, 'Gambling', 'Major', 'Possession of any gambling paraphernalia and/or\r\nengaging in any form of gambling within University\r\npremises or outside within a 50-meter radius from the campus perimeter or during any off-campus University sponsored activities.'),
-(4, 'Cutting Class', 'Minor', 'Violation of the usual classroom rules and regulations, such as cutting of classes set by the instructor.'),
-(5, 'Public Display of Affection', 'Minor', 'Something such as a kiss or loving touch that is conducted in the school premise.');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_studinfo`
---
-
-DROP TABLE IF EXISTS `tb_studinfo`;
-CREATE TABLE IF NOT EXISTS `tb_studinfo` (
-  `studid` int NOT NULL AUTO_INCREMENT,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `course` varchar(20) NOT NULL,
-  PRIMARY KEY (`studid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `tb_studinfo`
---
-
-INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
-(1, 'parker', 'peter', 'bsit'),
-(2, 'kent', 'clark', 'bscs');
+INSERT INTO `tbl_violationtypes` (`ViolationTypeID`, `ViolationName`, `ViolationLevel`, `FirstOffense`, `SecondOffense`, `ThirdOffense`) VALUES
+(1, 'Intoxication of Alcohol', 'Major', 'Three- to five-day suspension (3-5)', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission'),
+(2, 'Smoking', 'Major', 'Three- to five-day suspension (3-5)\r\n', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission '),
+(3, 'Gambling', 'Major', 'Three- to five-day suspension (3-5)', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission '),
+(4, 'Cutting Class', 'Minor', 'Written Warning', 'Written Reprimand', 'One-day suspension'),
+(5, 'Public Display of Affection', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension may include Disciplinary Probation\r\n'),
+(6, 'Improper Uniform / Dress Code', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(7, 'Misbehavior', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(8, 'Provocation to a fight (quarrel or fistfight).', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(9, 'Making all forms of disturbances', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(10, 'Unauthorized removal of official notices, posters, \r\nstreamers, tarpaulins', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(11, 'Breaking into a class or College-sponsored activities without the permission of the organizer', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(12, 'Membership to fraternities or sororities which are not duly recognized by the University.', 'Major', 'Three- to six-day suspension (3-6)', 'Six- to eight-day suspension (6-8), may include \r\nRe-admission Probation', 'Eight- to ten-day suspension (8-10), may \r\ninclude Non-readmission'),
+(13, 'Destructive acts, due to vandalism or drunkenness or \r\nrecklessness', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(14, 'Bringing bladed objects and similar objects', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(15, 'Acts that result to slight physical injury against any individual within the University premises', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(16, 'Bribery of any nature given to any employee of the University ', 'Major', 'Six- to ten-day suspension (6-10), may include Non-readmission', 'Ten- to twelve-day suspension (10-12), may include Non-readmission', 'Twelve- to fourteen-day suspension (12-14), may include Non-readmission\r\n'),
+(17, 'Acts that cause serious physical injury which may include damage to property', 'Major', 'Eight- to twelve-day suspension (8-12), may include Non-readmission', 'Twelve- fourteen-day suspension (12-14), may include Non-readmission', 'Fourteen- to sixteen-day suspension (14-16), may include Non-readmission'),
+(18, 'Student protests whose distinctive character is intimidation, obstruction and/or destruction.', 'Major', 'Ten to fourteen day suspension (10 -14), may \r\ninclude Non-readmission', 'Fifteen to seventeen day suspension (15-17), may include Non-readmission', 'Eighteen to twenty day suspension (18-20), may include Non-readmission '),
+(19, 'Academic dishonesty or cheating during examination', 'Major', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension');
 
 --
 -- Constraints for dumped tables
@@ -299,34 +500,33 @@ INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
 -- Constraints for table `tbl_adminaccount`
 --
 ALTER TABLE `tbl_adminaccount`
-  ADD CONSTRAINT `StaffID_fk_AdminAccount` FOREIGN KEY (`StaffID`) REFERENCES `tbl_staff` (`StaffID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `StaffID_fk_AdminAccount` FOREIGN KEY (`StaffID`) REFERENCES `tbl_staff` (`StaffID`);
 
 --
--- Constraints for table `tbl_callslip`
+-- Constraints for table `tbl_appeal`
 --
-ALTER TABLE `tbl_callslip`
-  ADD CONSTRAINT `SRCode_fk_CallSlip` FOREIGN KEY (`SRCode`) REFERENCES `tbl_students` (`SRCode`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `StaffID_fk_CallSlip` FOREIGN KEY (`StaffID`) REFERENCES `tbl_staff` (`StaffID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `tbl_appeal`
+  ADD CONSTRAINT `ViolationID_fk_Appeal` FOREIGN KEY (`ViolationID`) REFERENCES `tbl_violationreport` (`ViolationID`);
 
 --
 -- Constraints for table `tbl_studentaccount`
 --
 ALTER TABLE `tbl_studentaccount`
-  ADD CONSTRAINT `SRCode_fk_User` FOREIGN KEY (`SRCode`) REFERENCES `tbl_students` (`SRCode`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `SRCode_fk_User` FOREIGN KEY (`SRCode`) REFERENCES `tbl_students` (`SRCode`);
 
 --
 -- Constraints for table `tbl_students`
 --
 ALTER TABLE `tbl_students`
-  ADD CONSTRAINT `CourseID_fk_Students` FOREIGN KEY (`CourseID`) REFERENCES `tbl_course` (`CourseID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `CourseID_fk_Students` FOREIGN KEY (`CourseID`) REFERENCES `tbl_course` (`CourseID`);
 
 --
 -- Constraints for table `tbl_violationreport`
 --
 ALTER TABLE `tbl_violationreport`
-  ADD CONSTRAINT `SRCode_fk_ViolationReport` FOREIGN KEY (`SRCode`) REFERENCES `tbl_students` (`SRCode`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `StaffID_fk_ViolationReport` FOREIGN KEY (`StaffID`) REFERENCES `tbl_staff` (`StaffID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `ViolationTypeID_fk_ViolationReport` FOREIGN KEY (`ViolationTypeID`) REFERENCES `tbl_violationtypes` (`ViolationTypeID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `SRCode_fk_ViolationReport` FOREIGN KEY (`SRCode`) REFERENCES `tbl_students` (`SRCode`),
+  ADD CONSTRAINT `StaffID_fk_ViolationReport` FOREIGN KEY (`StaffID`) REFERENCES `tbl_staff` (`StaffID`),
+  ADD CONSTRAINT `ViolationTypeID_fk_ViolationReport` FOREIGN KEY (`ViolationTypeID`) REFERENCES `tbl_violationtypes` (`ViolationTypeID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
