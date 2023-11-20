@@ -37,9 +37,17 @@ CREATE TABLE IF NOT EXISTS `tbempinfo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table `tbempinfo`
-INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
-(1, 'aguila', 'nina', 'cics'),
-(2, 'medrano', 'ivan', 'bsit');
+INSERT INTO `tbempinfo` (`lastname`, `firstname`, `department`) VALUES
+('aguila', 'nina', 'cics'),
+('REYES', 'CHRISTOPHER', 'cics'),
+('RAYOS', 'JONNAH ', 'cics'),
+('AUSTRIA', 'CARL ', 'cics'),
+('LEYRIT', 'TRISTAN ', 'cics'),
+('PABLO', 'JOSEPH', 'cabe'),
+('LIBUNAO', 'ANGELENE ', 'cabe'),
+('SAMBITAN', 'KRYSTEL ', 'cabe'),
+('MACALINGA', 'ANGELICA ', 'cabe'),
+('BALAZON', 'FRANCIS ', 'cabe');
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_librarian`
@@ -57,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `tb_librarian` (
 -- Dumping data for table `tb_librarian`
 INSERT INTO `tb_librarian` (`empid`, `email`, `password`, `role`) VALUES
 (1, 'aguila@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian'),
-(2, 'medrano@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian');
+(2, 'reyes@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian');
 
 -- --------------------------------------------------------
 
@@ -72,10 +80,19 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table `tb_studinfo`
-INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
-(1, 'parker', 'peter', 'bsit'),
-(2, 'kent', 'clark', 'bscs');
+INSERT INTO `tb_studinfo` (`lastname`, `firstname`, `course`) VALUES
+('Parker', 'Peter', 'BSIT'),
+('Kent', 'Clark', 'BSCS'),
+('Client', 'Bruce', 'BSMA'),
+('Prince', 'Diana', 'BSMA'),
+('Allen', 'Barry', 'BSMA'),
+('Jordan', 'Hal', 'BSIT'),
+('Rogers', 'Steve', 'BSIT'),
+('Stark', 'Tony', 'BSIT'),
+('Romanoff', 'Natasha', 'BSIT'),
+('Danvers', 'Carol', 'BSIT');
 COMMIT;
+
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_client`
@@ -93,7 +110,15 @@ CREATE TABLE IF NOT EXISTS `tb_client` (
 -- Dumping data for table `tb_client`
 INSERT INTO `tb_client` (`studid`, `email`, `password`, `role`) VALUES
 (1, 'parker@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(2, 'kent@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
+(2, 'kent@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(3, 'client@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(4, 'prince@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(5, 'allen@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(6, 'jordan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(7, 'rogers@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(8, 'stark@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(9, 'romanoff@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(10, 'danvers@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
 
 -- --------------------------------------------------------
 
@@ -101,7 +126,6 @@ INSERT INTO `tb_client` (`studid`, `email`, `password`, `role`) VALUES
 DROP TABLE IF EXISTS `tb_admin`;
 CREATE TABLE IF NOT EXISTS `tb_admin` (
   `adminID` int(11) NOT NULL AUTO_INCREMENT,
-  `studid` int(11) NOT NULL,
   `fullname` varchar(25) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -110,9 +134,17 @@ CREATE TABLE IF NOT EXISTS `tb_admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table `tb_admin`
-INSERT INTO `tb_admin` (`studid`, `fullname`, `email`, `password`, `role`) VALUES
-(1, 'Ivan Admin', 'admin@g',  '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-(2, 'Admin name', 'admin2@g', 'password2', 'Admin');
+INSERT INTO `tb_admin` (`fullname`, `email`, `password`, `role`) VALUES
+('Medrano, Ivan D.', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Admin name', 'admin2@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Bautista, Chris John L.', 'bautista@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Panaligan, Jomari M.', 'panaligan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Hernandez, Marc Andrei L.', 'hernandez@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Maur Admin', 'Maur@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Queen Admin', 'Queen@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Mayo Admin', 'Mayo@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+('Lean Admin', 'Lean@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin');
 COMMIT;
 -- --------------------------------------------------------
 
@@ -174,11 +206,11 @@ INSERT INTO `book_transactions` (`userID`, `bookID`, `inQuantity`, `outQuantity`
 (2, 8, 1, 0, '2023-11-20 09:20:29'),
 (2, 9, 0, 3, '2023-11-20 04:20:00'),
 (2, 10, 2, 0, '2023-11-21 06:05:00'),
-(3, 11, 4, 0, '2023-11-21 03:14:51'),
-(3, 12, 0, 5, '2023-11-23 03:20:58'),
-(3, 13, 0, 5, '2023-11-23 04:53:56'),
-(3, 14, 1, 0, '2023-11-24 05:08:34'),
-(3, 15, 0, 1, '2023-11-25 05:08:45');
+(1, 11, 4, 0, '2023-11-21 03:14:51'),
+(1, 12, 0, 5, '2023-11-23 03:20:58'),
+(1, 13, 0, 5, '2023-11-23 04:53:56'),
+(1, 14, 1, 0, '2023-11-24 05:08:34'),
+(1, 15, 0, 1, '2023-11-25 05:08:45');
 
 -- Restore old character set values
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
