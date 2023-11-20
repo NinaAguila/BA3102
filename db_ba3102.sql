@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 20, 2023 at 05:45 AM
+-- Generation Time: Nov 20, 2023 at 07:05 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -199,19 +199,68 @@ CREATE TABLE IF NOT EXISTS `login_logout_log` (
   `event_type` enum('login','logout') NOT NULL,
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=383 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=387 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `login_logout_log`
 --
 
 INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
+(386, 'adder', 'equipment adder', 'login', '2023-11-20 14:57:43'),
+(385, 'admin', 'admin', 'logout', '2023-11-20 14:57:39'),
+(384, 'admin', 'admin', 'login', '2023-11-20 14:53:44'),
+(383, 'adder', 'equipment adder', 'logout', '2023-11-20 14:53:36'),
 (382, 'adder', 'equipment adder', 'login', '2023-11-20 11:49:32'),
 (381, 'admin', 'admin', 'logout', '2023-11-20 11:49:27'),
 (380, 'admin', 'admin', 'login', '2023-11-20 11:48:37'),
 (379, 'adder', 'equipment adder', 'logout', '2023-11-20 11:48:33'),
 (378, 'adder', 'equipment adder', 'login', '2023-11-20 11:17:43'),
 (377, 'admin', 'admin', 'logout', '2023-11-20 11:17:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbempinfo`
+--
+
+DROP TABLE IF EXISTS `tbempinfo`;
+CREATE TABLE IF NOT EXISTS `tbempinfo` (
+  `empid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `department` varchar(30) NOT NULL,
+  PRIMARY KEY (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbempinfo`
+--
+
+INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
+(1, 'aguila', 'nina', 'cics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_studinfo`
+--
+
+DROP TABLE IF EXISTS `tb_studinfo`;
+CREATE TABLE IF NOT EXISTS `tb_studinfo` (
+  `studid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `course` varchar(20) NOT NULL,
+  PRIMARY KEY (`studid`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tb_studinfo`
+--
+
+INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
+(1, 'parker', 'peter', 'bsit'),
+(2, 'kent', 'clark', 'bscs');
 
 -- --------------------------------------------------------
 
