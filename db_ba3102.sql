@@ -29,10 +29,9 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `tbempinfo`
 --
-
 DROP TABLE IF EXISTS `tbempinfo`;
 CREATE TABLE IF NOT EXISTS `tbempinfo` (
-  `empid` int NOT NULL AUTO_INCREMENT,
+  `empid` int(11) NOT NULL AUTO_INCREMENT,
   `lastname` varchar(25) NOT NULL,
   `firstname` varchar(25) NOT NULL,
   `department` varchar(30) NOT NULL,
@@ -54,7 +53,7 @@ INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
 
 DROP TABLE IF EXISTS `tb_studinfo`;
 CREATE TABLE IF NOT EXISTS `tb_studinfo` (
-  `studid` int NOT NULL AUTO_INCREMENT,
+  `studid` int(11) NOT NULL AUTO_INCREMENT,
   `lastname` varchar(25) NOT NULL,
   `firstname` varchar(25) NOT NULL,
   `course` varchar(20) NOT NULL,
@@ -68,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
 INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
 (1, 'parker', 'peter', 'bsit'),
 (2, 'kent', 'clark', 'bscs');
+COMMIT;
 
 -- --------------------------------------------------------
 
