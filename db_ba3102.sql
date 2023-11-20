@@ -1,17 +1,19 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 23, 2023 at 01:41 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Host: 127.0.0.1:3306
+-- Generation Time: Nov 20, 2023 at 07:07 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
+
 CREATE DATABASE IF NOT EXISTS db_ba3102;
 USE db_ba3102;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,19 +27,66 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbempinfo`
+--
+
+DROP TABLE IF EXISTS `tbempinfo`;
+CREATE TABLE IF NOT EXISTS `tbempinfo` (
+  `empid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `department` varchar(30) NOT NULL,
+  PRIMARY KEY (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbempinfo`
+--
+
+INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
+(1, 'aguila', 'nina', 'cics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_studinfo`
+--
+
+DROP TABLE IF EXISTS `tb_studinfo`;
+CREATE TABLE IF NOT EXISTS `tb_studinfo` (
+  `studid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `course` varchar(20) NOT NULL,
+  PRIMARY KEY (`studid`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tb_studinfo`
+--
+
+INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
+(1, 'parker', 'peter', 'bsit'),
+(2, 'kent', 'clark', 'bscs');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `books`
 --
+
 DROP TABLE IF EXISTS `books`;
 CREATE TABLE IF NOT EXISTS `books` (
-  `bookID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `title` varchar(255) NOT NULL,
-  `author` varchar(255) NOT NULL,
-  `genre` varchar(255) NOT NULL,
-  `ISBN` varchar(50) NOT NULL,
-  `description` text DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
-  `publication_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `bookID` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `author` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `genre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `ISBN` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `quantity` int NOT NULL,
+  `publication_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`bookID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `books`
@@ -70,21 +119,22 @@ INSERT INTO `books` (`title`, `author`, `genre`, `ISBN`, `description`, `quantit
 --
 -- Table structure for table `book_transactions`
 --
+
 DROP TABLE IF EXISTS `book_transactions`;
 CREATE TABLE IF NOT EXISTS `book_transactions` (
-  `transactionID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `userID` int(11) NOT NULL,
-  `bookID` int(11) NOT NULL,
-  `inQuantity` int(11) NOT NULL,
-  `outQuantity` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `transactionID` int NOT NULL AUTO_INCREMENT,
+  `userID` int NOT NULL,
+  `bookID` int NOT NULL,
+  `inQuantity` int NOT NULL,
+  `outQuantity` int NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`transactionID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `book_transactions`
 --
 
--- Inserting data into `book_transactions`
 INSERT INTO `book_transactions` (`userID`, `bookID`, `inQuantity`, `outQuantity`, `date`) VALUES
 (2, 6, 2, 0, '2023-11-19 09:20:17'),
 (2, 7, 0, 1, '2023-11-19 09:20:23'),
@@ -97,30 +147,38 @@ INSERT INTO `book_transactions` (`userID`, `bookID`, `inQuantity`, `outQuantity`
 (3, 14, 1, 0, '2023-11-24 05:08:34'),
 (3, 15, 0, 1, '2023-11-25 05:08:45');
 
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
+
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `userID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `fullname` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('Admin','Client','Librarian') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `userID` int NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('Admin','Client','Librarian') COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`fullname`, `email`, `password`, `role`) VALUES
-('Admin Name', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Ivan D. Librarian', 'librarian@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian'),
-('Librarian Name', 'librarian2@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian'),
-('Medrano, Ivan D.', 'medrano@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-('Bautista, Chris John L.', 'bautista@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-('Panaligan, Jomari M.', 'panaligan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-('Hernandez, Marc Andrei L.', 'hernandez@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-('Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
+INSERT INTO `users` (`userID`, `fullname`, `email`, `password`, `role`) VALUES
+(1, 'Admin Name', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(2, 'Ivan D. Librarian', 'librarian@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian'),
+(3, 'Librarian Name', 'librarian2@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian'),
+(4, 'Medrano, Ivan D.', 'medrano@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(5, 'Bautista, Chris John L.', 'bautista@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(6, 'Panaligan, Jomari M.', 'panaligan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(7, 'Hernandez, Marc Andrei L.', 'hernandez@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(8, 'Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
