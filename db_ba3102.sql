@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Nov 20, 2023 at 07:07 AM
--- Server version: 8.0.31
--- PHP Version: 8.0.26
+-- Host: 127.0.0.1:3308
+-- Generation Time: Oct 23, 2023 at 05:37 AM
+-- Server version: 8.0.18
+-- PHP Version: 7.3.12
 
 CREATE DATABASE IF NOT EXISTS db_ba3102;
 USE db_ba3102;
