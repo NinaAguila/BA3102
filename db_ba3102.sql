@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 -- Table structure for table `tbempinfo`
-DROP TABLE IF EXISTS `tbempinfo`;
+
 CREATE TABLE IF NOT EXISTS `tbempinfo` (
   `empid` int(11) NOT NULL AUTO_INCREMENT,
   `lastname` varchar(25) NOT NULL,
@@ -51,7 +51,7 @@ INSERT INTO `tbempinfo` (`lastname`, `firstname`, `department`) VALUES
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_librarian`
-DROP TABLE IF EXISTS `tb_librarian`;
+
 CREATE TABLE IF NOT EXISTS `tb_librarian` (
   `librarianID` int(11) NOT NULL AUTO_INCREMENT,
   `empid` int(11) NOT NULL,
@@ -70,7 +70,7 @@ INSERT INTO `tb_librarian` (`empid`, `email`, `password`, `role`) VALUES
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_studinfo`
-DROP TABLE IF EXISTS `tb_studinfo`;
+
 CREATE TABLE IF NOT EXISTS `tb_studinfo` (
   `studid` int(11) NOT NULL AUTO_INCREMENT,
   `lastname` varchar(25) NOT NULL,
@@ -83,20 +83,20 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
 INSERT INTO `tb_studinfo` (`lastname`, `firstname`, `course`) VALUES
 ('Parker', 'Peter', 'BSIT'),
 ('Kent', 'Clark', 'BSCS'),
-('Client', 'Bruce', 'BSMA'),
-('Prince', 'Diana', 'BSMA'),
-('Allen', 'Barry', 'BSMA'),
-('Jordan', 'Hal', 'BSIT'),
-('Rogers', 'Steve', 'BSIT'),
-('Stark', 'Tony', 'BSIT'),
-('Romanoff', 'Natasha', 'BSIT'),
-('Danvers', 'Carol', 'BSIT');
+('Lozares', 'Maur', 'BSMA'),
+('Angelou', 'Queen', 'BSMA'),
+('Mayo', 'Man', 'BSMA'),
+('Irish', 'Lean', 'BSIT'),
+('Maria', 'Andrea', 'BSIT'),
+('Valencia', 'Dex', 'BSIT'),
+('Bela', 'Ara', 'BSIT'),
+('Client', 'Name', 'BSIT');
 COMMIT;
 
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_client`
-DROP TABLE IF EXISTS `tb_client`;
+
 CREATE TABLE IF NOT EXISTS `tb_client` (
   `clientID` int(11) NOT NULL AUTO_INCREMENT,
   `studid` int(11) NOT NULL,
@@ -111,19 +111,19 @@ CREATE TABLE IF NOT EXISTS `tb_client` (
 INSERT INTO `tb_client` (`studid`, `email`, `password`, `role`) VALUES
 (1, 'parker@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
 (2, 'kent@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(3, 'client@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(4, 'prince@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(5, 'allen@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(6, 'jordan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(7, 'rogers@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(8, 'stark@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(9, 'romanoff@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
-(10, 'danvers@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
+(3, 'Maur@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(4, 'Queen@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(5, 'Mayo@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(6, 'Lean@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(7, 'Maria@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(8, 'Dex@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(9, 'Ara@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(10, 'Client@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
 
 -- --------------------------------------------------------
 
 -- Table structure for table `tb_admin`
-DROP TABLE IF EXISTS `tb_admin`;
+
 CREATE TABLE IF NOT EXISTS `tb_admin` (
   `adminID` int(11) NOT NULL AUTO_INCREMENT,
   `fullname` varchar(25) NOT NULL,
@@ -140,16 +140,12 @@ INSERT INTO `tb_admin` (`fullname`, `email`, `password`, `role`) VALUES
 ('Bautista, Chris John L.', 'bautista@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
 ('Panaligan, Jomari M.', 'panaligan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
 ('Hernandez, Marc Andrei L.', 'hernandez@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Maur Admin', 'Maur@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Queen Admin', 'Queen@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Mayo Admin', 'Mayo@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
-('Lean Admin', 'Lean@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin');
+('Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin');
 COMMIT;
 -- --------------------------------------------------------
 
 -- Table structure for table `books`
-DROP TABLE IF EXISTS `books`;
+
 CREATE TABLE IF NOT EXISTS `books` (
   `bookID` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
@@ -188,7 +184,7 @@ INSERT INTO `books` (`title`, `author`, `genre`, `ISBN`, `description`, `quantit
 -- --------------------------------------------------------
 
 -- Table structure for table `book_transactions`
-DROP TABLE IF EXISTS `book_transactions`;
+
 CREATE TABLE IF NOT EXISTS `book_transactions` (
   `transactionID` int NOT NULL AUTO_INCREMENT,
   `userID` int NOT NULL,
