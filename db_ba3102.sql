@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 24, 2023 at 09:01 AM
+-- Generation Time: Nov 21, 2023 at 07:26 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -18,280 +18,241 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_ba3102_gr4`
+-- Database: `db_ba3102`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_applicant`
+-- Table structure for table `tbadminaccount`
 --
 
-DROP TABLE IF EXISTS `tbl_applicant`;
-CREATE TABLE IF NOT EXISTS `tbl_applicant` (
-  `userID` varchar(10) NOT NULL,
-  `statusID` varchar(10) NOT NULL,
-  `loginID` varchar(10) NOT NULL,
-  `websiteID` varchar(10) NOT NULL,
-  `applicantName` varchar(255) NOT NULL,
-  PRIMARY KEY (`userID`),
-  KEY `statusID` (`statusID`),
-  KEY `loginID` (`loginID`),
-  KEY `websiteID` (`websiteID`),
-  KEY `applicantName` (`applicantName`(250))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbadminaccount`;
+CREATE TABLE IF NOT EXISTS `tbadminaccount` (
+  `adminid` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `passwordencrypted` varchar(255) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  PRIMARY KEY (`adminid`),
+  KEY `empid_fk_adminaccount` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_applicant`
+-- Dumping data for table `tbadminaccount`
 --
 
-INSERT INTO `tbl_applicant` (`userID`, `statusID`, `loginID`, `websiteID`, `applicantName`) VALUES
-(' UI0001', 'STI0001', 'LI0001', 'SI0001', 'WE0001'),
-('UI0002', 'STI0002', 'LI0002', 'SI0002', 'WE0002'),
-('UI0003', 'STI0003', 'LI0003', 'SI0003', 'WE0003'),
-('UI0004', 'STI0004', ' LI0004', 'SI0004', 'WE0004'),
-('UI0005', 'STI0005', 'LI0005', 'SI0005', 'WE0005');
+INSERT INTO `tbadminaccount` (`adminid`, `empid`, `passwordencrypted`, `username`) VALUES
+(1, 1, 'admin1234', 'admin');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_applicant_sign_up`
+-- Table structure for table `tbappstatus`
 --
 
-DROP TABLE IF EXISTS `tbl_applicant_sign_up`;
-CREATE TABLE IF NOT EXISTS `tbl_applicant_sign_up` (
-  `signUpID` varchar(10) NOT NULL,
-  `userName` varchar(255) NOT NULL,
-  `userPassword` varchar(255) NOT NULL,
-  `applicantName` varchar(255) NOT NULL,
-  `gender` varchar(10) NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `birthdate` date NOT NULL,
-  `contactNumber` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `emailAddress` varchar(255) NOT NULL,
-  PRIMARY KEY (`signUpID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbappstatus`;
+CREATE TABLE IF NOT EXISTS `tbappstatus` (
+  `statusid` varchar(10) NOT NULL,
+  `statusname` varchar(200) NOT NULL,
+  PRIMARY KEY (`statusname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_applicant_sign_up`
+-- Dumping data for table `tbappstatus`
 --
 
-INSERT INTO `tbl_applicant_sign_up` (`signUpID`, `userName`, `userPassword`, `applicantName`, `gender`, `address`, `birthdate`, `contactNumber`, `emailAddress`) VALUES
-('SI0001', 'jpanaligan85', 'P@ssw0rdJP', 'John Panaligan', 'Male', '123 Main Street, Manila', '2013-01-15', '+63 912 345 6789', 'john.panaligan@gmail.com'),
-('SI0002', 'mgarcia90', 'Maria123!', 'Maria Garcia', 'Female', '456 Oak Avenue, Cebu City\r\n', '2003-07-02', '', 'maria.garcia@gmail.com\r\n'),
-('SI0003', 'dmendoza88', 'MyP@ssw0rd', 'David Mendoza', 'Male', '789 Palm Road, Quezon City', '1993-11-05', ' +63 999 555 4321', 'david.mendoza@gmail.com'),
-('SI0004', 's.magno93', 'Sarah123', 'Sarah Magno', 'Female', '101 Pine Lane, Davao City', '1993-03-12', '+63 922 888 9999', 'sarah.magno@gmail.com'),
-('SI0005', 'j.cruz80', '1SecureP@ss\r\n', 'Juan Cruz', ' Male', '222 Cedar Street, Baguio City\r\n', '1980-09-20', '+63 966 111 7777', 'juan.cruz@gmail.com');
+INSERT INTO `tbappstatus` (`statusid`, `statusname`) VALUES
+('SI0004', 'Congratulions! You are hired. We are looking forward to work with you!'),
+('SI0005', 'Sorry, your application was rejected.'),
+('SI0003', 'We are pleased to inform you that you have been selected as one of the candidates for a FACE-TO-FACE INTERVIEW.'),
+('SI0001', 'We have successfully RECEIVED your application.'),
+('SI0002', 'Your application is UNDER REVIEW. Please wait for the next update.');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_apply`
+-- Table structure for table `tbdepartment`
 --
 
-DROP TABLE IF EXISTS `tbl_apply`;
-CREATE TABLE IF NOT EXISTS `tbl_apply` (
-  `applyID` varchar(10) NOT NULL,
-  `jobTitle` varchar(255) NOT NULL,
-  `applicantName` varchar(255) NOT NULL,
-  `applicantResume` longblob NOT NULL,
-  `applicantPicture` longblob NOT NULL,
-  `applicantEmail` varchar(255) NOT NULL,
-  `applicationNumber` varchar(10) NOT NULL,
-  `applicationDate` date NOT NULL,
-  `applicationStatus` varchar(255) NOT NULL,
-  PRIMARY KEY (`applyID`),
-  KEY `jobTitle` (`jobTitle`(250)),
-  KEY `applicantName` (`applicantName`(250)),
-  KEY `applicantEmail` (`applicantEmail`(250))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbdepartment`;
+CREATE TABLE IF NOT EXISTS `tbdepartment` (
+  `deptid` varchar(10) NOT NULL,
+  `deptname` varchar(50) NOT NULL,
+  PRIMARY KEY (`deptname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbdepartment`
+--
+
+INSERT INTO `tbdepartment` (`deptid`, `deptname`) VALUES
+('DI0010', 'Accounting Office'),
+('DI0003', 'College of Accountancy, Business and Economics'),
+('DI0009', 'College of Agriculture and Forestry'),
+('DI0001', 'College of Arts and Sciences'),
+('DI0005', 'College of Engineering, Architecture and Fine Arts'),
+('DI0008', 'College of Industrial Technology'),
+('DI0002', 'College of Informatics and Computing Sciences'),
+('DI0006', 'College of Nursing'),
+('DI0007', 'College of Nutrition and Dietetics'),
+('DI0004', 'College of Teacher Education'),
+('DI0016', 'External Affairs Office'),
+('DI0018', 'Health Services'),
+('DI0015', 'Human Resource Management Office'),
+('DI0017', 'ICT Services'),
+('DI0011', 'Library Services'),
+('DI0014', 'Office of the Guidance and Counseling'),
+('DI0012', 'Registrar Office'),
+('DI0013', 'Testing and Admission Office');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_department`
+-- Table structure for table `tbempinfo`
 --
 
-DROP TABLE IF EXISTS `tbl_department`;
-CREATE TABLE IF NOT EXISTS `tbl_department` (
-  `departmentID` varchar(10) NOT NULL,
-  `departmentName` varchar(255) NOT NULL,
-  PRIMARY KEY (`departmentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbempinfo`;
+CREATE TABLE IF NOT EXISTS `tbempinfo` (
+  `empid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `department` varchar(30) NOT NULL,
+  PRIMARY KEY (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_department`
+-- Dumping data for table `tbempinfo`
 --
 
-INSERT INTO `tbl_department` (`departmentID`, `departmentName`) VALUES
-('DI0001', 'CAS'),
-('DI0002', 'CICS'),
-('DI0003', 'Accounting Office'),
-('DI0004', 'CABE'),
-('DI0005', 'Library Services Office');
+INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
+(1, 'aguila', 'nina', 'cics');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_hr`
+-- Table structure for table `tbjobapplication`
 --
 
-DROP TABLE IF EXISTS `tbl_hr`;
-CREATE TABLE IF NOT EXISTS `tbl_hr` (
-  `hrID` varchar(10) NOT NULL,
-  `userID` varchar(10) NOT NULL,
-  `loginID` varchar(10) NOT NULL,
-  `departmentID` varchar(10) NOT NULL,
-  `jobID` varchar(10) NOT NULL,
-  `applyID` varchar(10) NOT NULL,
-  KEY `hrID` (`hrID`),
-  KEY `userID` (`userID`),
-  KEY `loginID` (`loginID`),
-  KEY `departmentID` (`departmentID`),
-  KEY `jobID` (`jobID`),
-  KEY `applyID` (`applyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbjobapplication`;
+CREATE TABLE IF NOT EXISTS `tbjobapplication` (
+  `appno` varchar(15) NOT NULL,
+  `jobtitle` varchar(255) NOT NULL,
+  `fname` varchar(255) NOT NULL,
+  `mname` varchar(255) NOT NULL,
+  `lname` varchar(255) NOT NULL,
+  `birthday` date NOT NULL,
+  `sex` varchar(10) NOT NULL,
+  `contactno` varchar(12) NOT NULL,
+  `emailadd` varchar(255) NOT NULL,
+  `appadd` varchar(255) NOT NULL,
+  `appeducation` varchar(255) NOT NULL,
+  `appeligibility` text NOT NULL,
+  `appworkexp` text NOT NULL,
+  `fileresume` varchar(90) NOT NULL,
+  `fileletter` varchar(90) NOT NULL,
+  `filediploma` varchar(90) NOT NULL,
+  `filecert` varchar(90) NOT NULL,
+  `appdate` date NOT NULL,
+  `appstatus` varchar(200) DEFAULT NULL,
+  `statusdate` date DEFAULT NULL,
+  PRIMARY KEY (`appno`),
+  KEY `title` (`jobtitle`),
+  KEY `status` (`appstatus`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_hr`
+-- Dumping data for table `tbjobapplication`
 --
 
-INSERT INTO `tbl_hr` (`hrID`, `userID`, `loginID`, `departmentID`, `jobID`, `applyID`) VALUES
-('HR0001', 'UI0001', 'LI0001', 'DI0001', ' JI0001', 'APP001'),
-('HR0002', 'UI0002', 'LI0002', 'DI0002', 'JI0002', 'APP002'),
-('HR0003', 'UI0003', 'LI0003', 'DI0003', 'JI0003', 'APP003'),
-('HR0004', 'UI0004', 'LI0004', 'DI0004', 'JI0004', 'APP004'),
-('HR0005', 'UI0005', 'LI0005', 'DI0005', 'JI0005', 'APP005');
+INSERT INTO `tbjobapplication` (`appno`, `jobtitle`, `fname`, `mname`, `lname`, `birthday`, `sex`, `contactno`, `emailadd`, `appadd`, `appeducation`, `appeligibility`, `appworkexp`, `fileresume`, `fileletter`, `filediploma`, `filecert`, `appdate`, `appstatus`, `statusdate`) VALUES
+('CV20232300', 'IT Lecturer', 'Carla Eliza', 'Magcawas', 'Villanueva', '2003-06-29', 'Female', '0987654321', 'carlaeliza@gmail.com', 'Sabang', 'College', 'None Required', 'Virtual Assistant', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', '2023-11-19', 'Your application is UNDER REVIEW. Please wait for the next update.', '2023-11-20'),
+('KA20239178', 'Medical Services Assistant', 'Kate', 'Rosal', 'Atienza', '2003-09-04', 'Female', '09655820186', 'karatienza@gmail.com', 'lumbang', 'College', 'BSIT', 'lazada', 'attachments/1x1 and posters.pdf', 'attachments/id sy 2023-2024.pdf', 'attachments/Kate_2ndyr_2ndsem-grades.pdf', 'attachments/Kate_3rd year_COR.pdf', '2023-11-13', 'We are pleased to inform you that you have been selected as one of the candidates for a FACE-TO-FACE INTERVIEW.', '2023-11-20');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_hr_account`
+-- Table structure for table `tbjobs`
 --
 
-DROP TABLE IF EXISTS `tbl_hr_account`;
-CREATE TABLE IF NOT EXISTS `tbl_hr_account` (
-  `hrID` varchar(10) NOT NULL,
-  `userName` varchar(255) NOT NULL,
-  `userPassword` varchar(255) NOT NULL,
-  PRIMARY KEY (`hrID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tbjobs`;
+CREATE TABLE IF NOT EXISTS `tbjobs` (
+  `jobid` varchar(255) NOT NULL,
+  `jobtitle` varchar(255) NOT NULL,
+  `departmentname` varchar(50) NOT NULL,
+  `quantity` int NOT NULL,
+  `dateposted` date NOT NULL,
+  `education` varchar(255) DEFAULT NULL,
+  `experience` text NOT NULL,
+  `expertise` text NOT NULL,
+  `competency` text NOT NULL,
+  `eligibility` text NOT NULL,
+  `dutres` text,
+  `hiringstatus` enum('Full','Active') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Active',
+  PRIMARY KEY (`jobtitle`),
+  KEY `Jobs` (`departmentname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_hr_account`
+-- Dumping data for table `tbjobs`
 --
 
-INSERT INTO `tbl_hr_account` (`hrID`, `userName`, `userPassword`) VALUES
-('HR0001', 'HRUser0001', 'P@ssw0rd#HR0001'),
-('HR0002', 'HRUser0002\r\n', 'S3cureHR#2023'),
-('HR0003', 'HRUser0003\r\n', 'HRAcc3ss$123!'),
-('HR0004', 'HRUser0004', 'DirHR2023@Acct!\r\n\r\n'),
-('HR0005', 'HRUser0005', 'AdminHRAcct$2023*');
+INSERT INTO `tbjobs` (`jobid`, `jobtitle`, `departmentname`, `quantity`, `dateposted`, `education`, `experience`, `expertise`, `competency`, `eligibility`, `dutres`, `hiringstatus`) VALUES
+('JI0001', 'Guidance Counselor III', 'Office of the Guidance and Counseling', 3, '2023-08-27', 'Graduate of Master in Guidance and Counseling', 'At least 1-year relevant experience', 'Counseling Skills; Intervention Planning and Development Skills; Stress Management Skills; Psychological Report Writing; Group and Activity Facilitation; Problem Solving and Decision Making; Communication Skills; Interpersonal Skills; Technology Skills; Professional Integrity; and Records and Data Management', 'Counseling Skills; Intervention Planning and Development Skills; Stress Management Skills; Psychological Report Writing; Group and Activity Facilitation; Problem Solving and Decision Making; Communication Skills; Interpersonal Skills; Technology Skills; Professional Integrity; and Records and Data Management', 'Registered Guidance Counselor', 'true', 'Full'),
+('JI0002', 'IT Lecturer', 'College of Informatics and Computing Sciences', 5, '2023-02-22', 'Candidates should have at least master’s degree and/or units and possess an undergraduate degree in IT/CS or any allied field', 'With at least experience in working IT industry, or handles project related to IT', 'Possesses competent knowledge in the field of IT/CS, can handle system administration and maintenance and system integration and Object-Oriented Programming', 'Possesses competent knowledge in the field of IT/CS, can handle system administration and maintenance and system integration and Object-Oriented Programming', 'None Required', 'True', 'Active'),
+('JI0009', 'Librarian', 'Library Services', 1, '2023-11-19', 'Librarian', 'At least 1-year relevant experience', 'Librarian', 'Librarian', 'None Required', 'true', 'Active'),
+('JI0004', 'Management Accounting Lecturer', 'College of Accountancy, Business and Economics', 1, '2023-06-29', 'Bachelor of Science in Management Accounting with knowledge in Business Analytics', 'At least one (1) year experience in the Academe or in the industry', 'Business Analytics', 'Business Analytics', 'None Required', 'True', 'Active'),
+('JI0003', 'Medical Services Assistant', 'Health Services', 2, '2023-09-04', 'Graduate of Bachelor of Science in Nursing (BSN)', 'Two (2) years of relevant experience', 'With Basic Life Support(BLS) / Advance Cardiovascular Life Support(ACLS) Training', 'With Basic Life Support(BLS) / Advance Cardiovascular Life Support(ACLS) Training', 'None Required', 'True', 'Active'),
+('JI0005', 'Psychology Instructor', 'College of Arts and Sciences', 3, '2023-01-30', 'Bachelor of Science in Psychology or other related Bachelor’s Degree with Relevant Master’s Degree', 'None Required', 'Proficient in the field of Psycholgy; possess critical thinking skills, communication skills and interpersonal skills', 'Proficient in the field of Psycholgy; possess critical thinking skills, communication skills and interpersonal skills', 'RA 1080', 'Terms and conditions of employment will be discussed during interview', 'Active'),
+('JI0008', 'School Dentist', 'Health Services', 1, '2023-11-19', 'Graduate of BS Dentistry', 'At least 1-year relevant experience', 'Dentistry', 'Dentistry', 'None Required', 'false', 'Full'),
+('JI0006', 'Social Science Lecturers', 'College of Teacher Education', 3, '2023-01-01', 'Bachelor of Arts in Social Science or any related Bachelor\'s Degree with relevant Master\'s Degree', 'Two (2) years of relevant experience', 'None Required', 'Possess competent knowledge in the field of Social Science; good at communication, listening, collaboration, and adaptability', 'None Required', 'Terms and conditions of employment will be discussed during interview', 'Active'),
+('JI0007', 'System Admin', 'ICT Services', 2, '2023-11-19', 'Graduate of Bachelor of Science in Information Technology or Computer Science', 'With at least experience in working IT industry, or handles project related to IT', 'IT', 'IT', 'None Required', 'true', 'Active');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_jobs`
+-- Table structure for table `tb_studinfo`
 --
 
-DROP TABLE IF EXISTS `tbl_jobs`;
-CREATE TABLE IF NOT EXISTS `tbl_jobs` (
-  `jobID` varchar(10) NOT NULL,
-  `jobTitle` varchar(255) NOT NULL,
-  `jobDescription` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`jobID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `tb_studinfo`;
+CREATE TABLE IF NOT EXISTS `tb_studinfo` (
+  `studid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `course` varchar(255) NOT NULL,
+  PRIMARY KEY (`studid`),
+  KEY `course_fk_studinfo` (`course`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `tbl_jobs`
+-- Dumping data for table `tb_studinfo`
 --
 
-INSERT INTO `tbl_jobs` (`jobID`, `jobTitle`, `jobDescription`) VALUES
-('JI0001', 'Chemistry Instructor', 'EDUCATION:\r\nBachelor of Science in Chemistry or any related Bachelor\'s Degree with Relevant Master\'s Degree\r\n\r\nEXPERIENCE:\r\nTwo (2) years of relevant experience\r\n\r\nEXPERTISE:\r\nChemistry courses\r\n\r\nCOMPETENCY:\r\nPossess competent knowledge in the field of Chemistry\r\nGood at communication, listening, collaboration, and adaptability\r\n\r\nELIGIBILITY:\r\nRA 1080\r\n\r\nDUTIES AND RESPONSIBILITY:\r\nTerms and conditions of employment will be discussed during interview'),
-('JI0002', 'IT Specialist', 'EDUCATION:\r\nBachelor of Science in Computer Science or related Bachelor\'s Degree with a relevant Master\'s Degree\r\n\r\nEXPERIENCE:\r\nTwo (2) years of relevant experience in IT field\r\n\r\nEXPERTISE:\r\nInformation technology courses\r\n\r\nCOMPETENCY:\r\nProficiency in programming, data analysis, and problem-solving\r\n\r\nELIGIBILITY:\r\nRelevant certifications and qualifications\r\n\r\nDUTIES AND RESPONSIBILITY:\r\nSpecific responsibilities for the College of Informatics and Computing Sciences will be discussed during the interview\r\n'),
-('JI0003', 'Accountant', 'EDUCATION:\r\nBachelor\'s degree in Accounting or Finance\r\n\r\nEXPERIENCE:\r\nMinimum of three (3) years of accounting experience\r\n\r\nEXPERTISE:\r\nAccounting principles and financial management\r\n\r\nCOMPETENCY:\r\nStrong analytical and organizational skills\r\n\r\nELIGIBILITY:\r\nRelevant certifications and qualifications\r\n\r\nDUTIES AND RESPONSIBILITY:\r\nSpecific responsibilities for the Accounting Office will be discussed during the interview\r\n\r\n'),
-('JI0004', 'Academic Coordinator', 'EDUCATION:\r\nA Bachelor\'s or Master\'s degree in Accounting, Finance, or a related field is required.\r\nAdditional qualifications such as CPA certification may be necessary for certain positions.\r\n\r\nEXPERIENCE:\r\nA minimum of 3 years of relevant experience in accounting, finance, or a related field.\r\nPrior experience in teaching or academic administration, if applicable.\r\n\r\nEXPERTISE:\r\nSpecialized knowledge in accounting principles, financial management, and related subjects.\r\nSkills in curriculum development and academic leadership.\r\n\r\nCOMPETENCY:\r\nCompetencies such as financial analysis, financial reporting, and curriculum design.\r\nStrong leadership, communication, and teamwork skills.\r\n\r\nELIGIBILITY:\r\nEligibility may include meeting the educational and professional requirements set by the institution.\r\n\r\nDUTIES AND RESPONSIBILITY:\r\nSpecific duties and responsibilities for positions within CABE will vary based on roles such as academic staff, instructors, or administrative positions. These will be discussed during the interview to ensure alignment with the department\'s objectives and expectations.\r\n'),
-('JI0005', 'Library Services Specialist', 'EDUCATION:\r\nBachelor\'s or Master\'s degree in Library Science or a related field.\r\nProficiency in library cataloging systems and digital library management.\r\n\r\nEXPERIENCE:\r\nMinimum of 2 years of experience in library management and services.\r\nFamiliarity with library software and technology.\r\n\r\nEXPERTISE:\r\nStrong organizational and classification skills for library materials.\r\nKnowledge of library information systems and digital archiving.\r\n\r\nCOMPETENCY:\r\nExcellent customer service and interpersonal skills.\r\nAbility to work collaboratively in a team and assist patrons effectively.\r\nELIGIBILITY:\r\nEligibility may include a valid professional library certification.\r\n\r\nDUTIES AND RESPONSIBILITY:\r\nSpecific duties and responsibilities for Library Services Office will be discussed during the interview to ensure alignment with the department\'s goals and objectives.\r\n');
-
--- --------------------------------------------------------
+INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
+(13, 'parker', 'peter', 'BS Information Techonlogy'),
+(14, 'kent', 'clark', 'BS Computer Science');
 
 --
--- Table structure for table `tbl_login`
+-- Constraints for dumped tables
 --
 
-DROP TABLE IF EXISTS `tbl_login`;
-CREATE TABLE IF NOT EXISTS `tbl_login` (
-  `loginID` varchar(10) NOT NULL,
-  `signUpID` varchar(10) NOT NULL,
-  `hrID` varchar(10) NOT NULL,
-  `levelID` varchar(10) NOT NULL,
-  PRIMARY KEY (`loginID`),
-  KEY `signUpID` (`signUpID`),
-  KEY `hrID` (`hrID`),
-  KEY `levelID` (`levelID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+--
+-- Constraints for table `tbadminaccount`
+--
+ALTER TABLE `tbadminaccount`
+  ADD CONSTRAINT `empid_fk_adminaccount` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
 
 --
--- Dumping data for table `tbl_login`
+-- Constraints for table `tbjobapplication`
 --
-
-INSERT INTO `tbl_login` (`loginID`, `signUpID`, `hrID`, `levelID`) VALUES
-('LI0001', 'SI0001', 'HR0001', '2'),
-('LI0002', 'SI0002', 'HR0002', '2'),
-('LI0003', 'SI0003', 'HR0003', '2'),
-('LI0004', 'SI0004', 'HR0004', '2'),
-('LI0005', 'SI0005', 'HR0005', '2');
-
--- --------------------------------------------------------
+ALTER TABLE `tbjobapplication`
+  ADD CONSTRAINT `appstatus_fk_jobapplication` FOREIGN KEY (`appstatus`) REFERENCES `tbappstatus` (`statusname`),
+  ADD CONSTRAINT `jobtitle_fk_jobapplication` FOREIGN KEY (`jobtitle`) REFERENCES `tbjobs` (`jobtitle`);
 
 --
--- Table structure for table `tbl_security_level`
+-- Constraints for table `tbjobs`
 --
-
-DROP TABLE IF EXISTS `tbl_security_level`;
-CREATE TABLE IF NOT EXISTS `tbl_security_level` (
-  `levelID` varchar(10) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  PRIMARY KEY (`levelID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `tbl_security_level`
---
-
-INSERT INTO `tbl_security_level` (`levelID`, `description`) VALUES
-('1', 'Admin'),
-('2', 'HR'),
-('3', 'User');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_website`
---
-
-DROP TABLE IF EXISTS `tbl_website`;
-CREATE TABLE IF NOT EXISTS `tbl_website` (
-  `websiteID` varchar(10) NOT NULL,
-  `departmentID` varchar(10) NOT NULL,
-  `jobID` varchar(10) NOT NULL,
-  `applyID` varchar(10) NOT NULL,
-  PRIMARY KEY (`websiteID`),
-  KEY `departmentID` (`departmentID`),
-  KEY `jobID` (`jobID`),
-  KEY `applyID` (`applyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `tbl_website`
---
-
-INSERT INTO `tbl_website` (`websiteID`, `departmentID`, `jobID`, `applyID`) VALUES
-('WE0001', ' DI0001', 'JI0001', 'APP001'),
-('WE0002', 'DI0002', 'JI0002', 'APP002'),
-('WE0003', 'DI0003', 'JI0003', 'APP003'),
-('WE0004', 'DI0004', 'JI0004', 'APP004'),
-('WE0005', 'DI0005', ' JI0005', 'APP005');
+ALTER TABLE `tbjobs`
+  ADD CONSTRAINT `departmentname_fk_jobs` FOREIGN KEY (`departmentname`) REFERENCES `tbdepartment` (`deptname`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
