@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `tb_empinfo` (
   `firstname` varchar(25) NOT NULL,
   `department` varchar(30) NOT NULL,
   PRIMARY KEY (`empid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Insert data into the employee information table
 INSERT INTO `tb_empinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
   `firstname` varchar(25) NOT NULL,
   `course` varchar(20) NOT NULL,
   PRIMARY KEY (`studid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tb_studinfo`
