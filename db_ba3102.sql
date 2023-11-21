@@ -1,16 +1,11 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Oct 30, 2023 at 02:38 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.0.25
+CREATE DATABASE IF NOT EXISTS db_ba3102;
+USE db_ba3102;
 
+-- Set SQL mode and other configurations
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,15 +19,62 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
+-- Table structure for table `tb_empinfo`
+--
+-- Create the employee information table
+CREATE TABLE IF NOT EXISTS `tb_empinfo` (
+  `empid` int(11) NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `department` varchar(30) NOT NULL,
+  PRIMARY KEY (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Insert data into the employee information table
+INSERT INTO `tb_empinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
+(1, 'aguila', 'nina', 'cics');
+
+-- Create the admin table with a foreign key reference to tb_empinfo
+CREATE TABLE admin (
+  id int(10) NOT NULL AUTO_INCREMENT,
+  username varchar(100) NOT NULL,
+  email varchar(100) NOT NULL,
+  password varchar(50) NOT NULL,
+  empid int(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (`empid`) REFERENCES `tb_empinfo` (`empid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Insert data into the admin table
+INSERT INTO admin (id, username, email, password, empid) VALUES
+(1, 'admin', 'admin123@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 1);
+
+-- Commit the transaction
+COMMIT;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_studinfo`
 --
 
-CREATE TABLE `admin` (
-  `id` int(10) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS `tb_studinfo` (
+  `studid` int(11) NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) NOT NULL,
+  `firstname` varchar(25) NOT NULL,
+  `course` varchar(20) NOT NULL,
+  PRIMARY KEY (`studid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tb_studinfo`
+--
+
+INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
+(1, 'parker', 'peter', 'bsit'),
+(2, 'kent', 'clark', 'bscs');
+
+
 
 -- --------------------------------------------------------
 
@@ -40,53 +82,71 @@ CREATE TABLE `admin` (
 -- Table structure for table `menu`
 --
 
-CREATE TABLE `menu` (
-  `food_id` int(50) NOT NULL,
-  `avail_menu` varchar(200) NOT NULL,
-  `menu_desc` varchar(500) NOT NULL,
-  `quantity` int(100) NOT NULL,
-  `price` decimal(4,2) NOT NULL,
-  `image` varchar(200) NOT NULL
+CREATE TABLE menu (
+  food_id int(11) NOT NULL AUTO_INCREMENT,
+  available_menu varchar(100) NOT NULL,
+  food_desc varchar(100) DEFAULT NULL,
+  price decimal(4,2) DEFAULT NULL,
+  image varchar(100) NOT NULL,
+  PRIMARY KEY (food_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu`
+--
+
+INSERT INTO menu (food_id, available_menu, food_desc, price, image) VALUES
+(20, 'Pancit Guisado', 'Regular', '60.00', '64649f7f74d36.jpg');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ordered_tbl`
+-- Table structure for table `order_manager`
 --
 
-CREATE TABLE `ordered_tbl` (
-  `order_id` int(100) NOT NULL,
-  `ordered_menu` varchar(100) NOT NULL,
-  `price` int(100) NOT NULL,
-  `quantity` int(100) NOT NULL
+CREATE TABLE order_manager (
+  Order_Id int(100) NOT NULL AUTO_INCREMENT,
+  Full_Name varchar(100) NOT NULL,
+  Phone_No bigint(100) NOT NULL,
+  Address varchar(100) NOT NULL,
+  Pay_Mode varchar(100) NOT NULL,
+  status varchar(50) DEFAULT NULL,
+  PRIMARY KEY (Order_Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_manager`
+--
+
+INSERT INTO order_manager (Order_Id, Full_Name, Phone_No, Address, Pay_Mode, status) VALUES
+(7, 'new customer', 123456, 'new address', 'COD', 'Pending');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_manager_tbl`
+-- Table structure for table `order_table`
 --
 
-CREATE TABLE `order_manager_tbl` (
-  `order_id` int(50) NOT NULL,
-  `sr-code` int(10) NOT NULL,
-  `phone_no` int(20) NOT NULL,
-  `orders` varchar(1000) NOT NULL
+CREATE TABLE order_table (
+  Order_Id int(100) NOT NULL,
+  ordered_menu varchar(100) NOT NULL,
+  price int(100) NOT NULL,
+  quantity int(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `staff`
+-- Dumping data for table `order_table`
 --
 
-CREATE TABLE `staff` (
-  `id` int(10) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO order_table (Order_Id, ordered_menu, price, quantity) VALUES
+(3, 'Pancit Guisado', 60, 1),
+(3, 'Lomi', 60, 1),
+(1, 'Pancit Guisado', 60, 1),
+(1, 'Lomi', 60, 1),
+(3, 'Pancit Guisado', 60, 1),
+(4, 'Pancit Guisado', 60, 1),
+(5, 'Pancit Guisado', 60, 2),
+(6, 'Pancit Guisado', 60, 1);
 
 -- --------------------------------------------------------
 
@@ -94,92 +154,23 @@ CREATE TABLE `staff` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(10) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(50) NOT NULL
+CREATE TABLE users (
+  id int(10) NOT NULL AUTO_INCREMENT,
+  username varchar(100) NOT NULL,
+  email varchar(100) NOT NULL,
+  password varchar(100) NOT NULL,
+  studid int(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `users`
 --
 
---
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
+INSERT INTO users (id, username, email, password, studid) VALUES
+(1, 'user', 'user123@gmail.com', 'ee11cbb19052e40b07aac0ca060c23ee', 2);
 
---
--- Indexes for table `menu`
---
-ALTER TABLE `menu`
-  ADD PRIMARY KEY (`food_id`);
-
---
--- Indexes for table `ordered_tbl`
---
-ALTER TABLE `ordered_tbl`
-  ADD PRIMARY KEY (`order_id`);
-
---
--- Indexes for table `order_manager_tbl`
---
-ALTER TABLE `order_manager_tbl`
-  ADD PRIMARY KEY (`order_id`);
-
---
--- Indexes for table `staff`
---
-ALTER TABLE `staff`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `admin`
---
-ALTER TABLE `admin`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `menu`
---
-ALTER TABLE `menu`
-  MODIFY `food_id` int(50) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `ordered_tbl`
---
-ALTER TABLE `ordered_tbl`
-  MODIFY `order_id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `order_manager_tbl`
---
-ALTER TABLE `order_manager_tbl`
-  MODIFY `order_id` int(50) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `staff`
---
-ALTER TABLE `staff`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
