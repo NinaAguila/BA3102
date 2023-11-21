@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 21, 2023 at 07:42 AM
+-- Generation Time: Nov 21, 2023 at 08:00 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -20,29 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_ba3102`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbadminaccount`
---
-
-DROP TABLE IF EXISTS `tbadminaccount`;
-CREATE TABLE IF NOT EXISTS `tbadminaccount` (
-  `adminid` int NOT NULL AUTO_INCREMENT,
-  `empid` int NOT NULL,
-  `passwordencrypted` varchar(255) NOT NULL,
-  `username` varchar(20) NOT NULL,
-  PRIMARY KEY (`adminid`),
-  KEY `empid_fk_adminaccount` (`empid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `tbadminaccount`
---
-
-INSERT INTO `tbadminaccount` (`adminid`, `empid`, `passwordencrypted`, `username`) VALUES
-(1, 1, 'admin1234', 'admin');
 
 -- --------------------------------------------------------
 
@@ -126,6 +103,29 @@ CREATE TABLE IF NOT EXISTS `tbempinfo` (
 
 INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
 (1, 'aguila', 'nina', 'cics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbhrstaff`
+--
+
+DROP TABLE IF EXISTS `tbhrstaff`;
+CREATE TABLE IF NOT EXISTS `tbhrstaff` (
+  `hrid` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `username` varchar(20) NOT NULL,
+  PRIMARY KEY (`hrid`),
+  KEY `empid_fk_adminaccount` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tbhrstaff`
+--
+
+INSERT INTO `tbhrstaff` (`hrid`, `empid`, `password`, `username`) VALUES
+(1, 1, 'admin1234', 'admin');
 
 -- --------------------------------------------------------
 
@@ -236,10 +236,10 @@ INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
 --
 
 --
--- Constraints for table `tbadminaccount`
+-- Constraints for table `tbhrstaff`
 --
-ALTER TABLE `tbadminaccount`
-  ADD CONSTRAINT `empid_fk_adminaccount` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
+ALTER TABLE `tbhrstaff`
+  ADD CONSTRAINT `empid_fk_hrstaff` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `tbjobapplication`
