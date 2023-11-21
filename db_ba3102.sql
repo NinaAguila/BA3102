@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 21, 2023 at 07:26 AM
+-- Generation Time: Nov 21, 2023 at 07:42 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `tbjobapplication` (
   `mname` varchar(255) NOT NULL,
   `lname` varchar(255) NOT NULL,
   `birthday` date NOT NULL,
-  `sex` varchar(10) NOT NULL,
+  `gender` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `contactno` varchar(12) NOT NULL,
   `emailadd` varchar(255) NOT NULL,
   `appadd` varchar(255) NOT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `tbjobapplication` (
 -- Dumping data for table `tbjobapplication`
 --
 
-INSERT INTO `tbjobapplication` (`appno`, `jobtitle`, `fname`, `mname`, `lname`, `birthday`, `sex`, `contactno`, `emailadd`, `appadd`, `appeducation`, `appeligibility`, `appworkexp`, `fileresume`, `fileletter`, `filediploma`, `filecert`, `appdate`, `appstatus`, `statusdate`) VALUES
+INSERT INTO `tbjobapplication` (`appno`, `jobtitle`, `fname`, `mname`, `lname`, `birthday`, `gender`, `contactno`, `emailadd`, `appadd`, `appeducation`, `appeligibility`, `appworkexp`, `fileresume`, `fileletter`, `filediploma`, `filecert`, `appdate`, `appstatus`, `statusdate`) VALUES
 ('CV20232300', 'IT Lecturer', 'Carla Eliza', 'Magcawas', 'Villanueva', '2003-06-29', 'Female', '0987654321', 'carlaeliza@gmail.com', 'Sabang', 'College', 'None Required', 'Virtual Assistant', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', '2023-11-19', 'Your application is UNDER REVIEW. Please wait for the next update.', '2023-11-20'),
 ('KA20239178', 'Medical Services Assistant', 'Kate', 'Rosal', 'Atienza', '2003-09-04', 'Female', '09655820186', 'karatienza@gmail.com', 'lumbang', 'College', 'BSIT', 'lazada', 'attachments/1x1 and posters.pdf', 'attachments/id sy 2023-2024.pdf', 'attachments/Kate_2ndyr_2ndsem-grades.pdf', 'attachments/Kate_3rd year_COR.pdf', '2023-11-13', 'We are pleased to inform you that you have been selected as one of the candidates for a FACE-TO-FACE INTERVIEW.', '2023-11-20');
 
