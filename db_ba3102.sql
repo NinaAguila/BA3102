@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 21, 2023 at 08:23 AM
+-- Generation Time: Nov 25, 2023 at 05:25 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -24,6 +24,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `addquantity`
+--
+
+DROP TABLE IF EXISTS `addquantity`;
+CREATE TABLE IF NOT EXISTS `addquantity` (
+  `equipmentId` int NOT NULL,
+  `quantity` int DEFAULT NULL,
+  `purchaseDate` datetime DEFAULT NULL,
+  `equipmentCondition` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`equipmentId`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `addquantity`
+--
+
+INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`) VALUES
+(1, 2, '2023-11-23 17:47:00', 'Like New');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `archived_equipment`
 --
 
@@ -36,29 +58,9 @@ CREATE TABLE IF NOT EXISTS `archived_equipment` (
   `brand` varchar(255) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   `description` text,
-  `purchaseDate` datetime DEFAULT NULL,
   `equipmentImage` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`archivedId`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `archived_equipment`
---
-
-INSERT INTO `archived_equipment` (`archivedId`, `equipmentId`, `archivedDate`, `equipmentName`, `brand`, `quantity`, `description`, `purchaseDate`, `equipmentImage`) VALUES
-(28, 126, '2023-11-20 22:10:39', 'sad', 'Adidas', 80, 'sfgdsfg', '2023-11-20 22:09:00', 'images/spalding.jpeg'),
-(27, 126, '2023-11-20 22:10:12', 'sad', 'Adidas', 5, 'sfgdsfg', '2023-11-20 22:09:00', 'images/spalding.jpeg'),
-(26, 125, '2023-11-20 22:05:50', 'sad', 'Nike', 85, 'dg', '1970-01-01 00:00:00', 'images/spalding.jpeg'),
-(25, 123, '2023-11-20 22:01:00', 'sad', 'Wilson', 247, 'sdfsdf', '2023-11-20 21:56:00', 'images/SEISlogo.png'),
-(24, 123, '2023-11-20 21:59:46', 'sad', 'Wilson', 2, 'sdfsdf', '2023-11-20 21:56:00', 'images/SEISlogo.png'),
-(23, 123, '2023-11-20 21:58:01', 'sad', 'Wilson', 2, 'sdfsdf', '2023-11-20 21:56:00', 'images/SEISlogo.png'),
-(22, 122, '2023-11-20 21:53:56', 'sad', 'Wilson', 83, 'asd', '2023-11-19 21:52:00', 'images/spalding.jpeg'),
-(21, 122, '2023-11-20 21:53:32', 'sad', 'Wilson', 2, 'asd', '2023-11-19 21:52:00', 'images/spalding.jpeg'),
-(29, 127, '2023-11-20 22:35:10', 'sad', 'Adidas', 5, 'vgjm', '1970-01-01 00:00:00', 'images/spalding.jpeg'),
-(30, 127, '2023-11-20 23:05:41', 'sad', 'Adidas', 5, 'vgjm', '1970-01-01 00:00:00', 'images/spalding.jpeg'),
-(31, 127, '2023-11-20 23:05:59', 'sad', 'Adidas', 5, 'vgjm', '1970-01-01 00:00:00', 'images/spalding.jpeg'),
-(32, 127, '2023-11-20 23:09:01', 'sad', 'Adidas', 5, 'vgjm', '1970-01-01 00:00:00', 'images/spalding.jpeg'),
-(33, 127, '2023-11-20 23:18:47', 'sad', 'Adidas', 5, 'vgjm', '1970-01-01 00:00:00', 'images/spalding.jpeg');
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -72,29 +74,24 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   `equipmentName` varchar(255) NOT NULL,
   `equipmentCategoryId` int NOT NULL,
   `brand` varchar(255) DEFAULT NULL,
-  `quantity` int DEFAULT NULL,
   `description` text,
-  `purchaseDate` datetime DEFAULT NULL,
-  `equipmentCondition` varchar(255) DEFAULT NULL,
   `locationId` int DEFAULT NULL,
   `equipmentImage` blob,
   PRIMARY KEY (`equipmentId`),
   KEY `equipmentCategoryId` (`equipmentCategoryId`),
   KEY `locationId` (`locationId`)
-) ENGINE=MyISAM AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `quantity`, `description`, `purchaseDate`, `equipmentCondition`, `locationId`, `equipmentImage`) VALUES
-(1, 'Soccer Ball', 1, 'Brand A', 12, 'Description for Soccer Ball', '2023-10-30 12:00:00', 'New', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067),
-(2, 'Basketball', 2, 'Brand B', 5, 'Description for Basketball', '2023-10-30 12:00:00', 'Used', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067),
-(3, 'Tennis Racket', 3, 'Brand C', 8, 'Description for Tennis Racket', '2023-10-30 12:00:00', 'Good', 3, 0x2f5349412f696d616765732f74656e6e69735f7261636b65742e6a7067),
-(4, 'Baseball Bat', 4, 'Brand D', 3, 'Description for Baseball Bat', '2023-10-30 12:00:00', 'Excellent', 4, 0x2f5349412f696d616765732f6261736562616c6c5f6261742e6a706567),
-(5, 'Volleyball', 5, 'Brand E', 12, 'Description for Volleyball', '2023-10-30 12:00:00', 'Fair', 5, 0x2f5349412f696d616765732f766f6c6c657962616c6c2e6a706567),
-(127, 'sad', 5, 'Adidas', 60, 'vgjm', '1970-01-01 00:00:00', '0', 2, 0x696d616765732f7370616c64696e672e6a706567),
-(116, 'ring', 2, 'Rawlings', 12, 'bilog', '2023-11-20 15:20:00', '0', 3, 0x696d616765732f72696e672e6a7067);
+INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`) VALUES
+(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067),
+(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067),
+(3, 'Tennis Racket', 3, 'Brand C', 'Description for Tennis Racket', 3, 0x2f5349412f696d616765732f74656e6e69735f7261636b65742e6a7067),
+(4, 'Baseball Bat', 4, 'Brand D', 'Description for Baseball Bat', 4, 0x2f5349412f696d616765732f6261736562616c6c5f6261742e6a706567),
+(5, 'Volleyball', 5, 'Brand E', 'Description for Volleyball', 5, 0x2f5349412f696d616765732f766f6c6c657962616c6c2e6a706567);
 
 -- --------------------------------------------------------
 
@@ -135,14 +132,7 @@ CREATE TABLE IF NOT EXISTS `equipmentremovalrequests` (
   `quantityToRemove` int DEFAULT NULL,
   PRIMARY KEY (`requestId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `equipmentremovalrequests`
---
-
-INSERT INTO `equipmentremovalrequests` (`requestId`, `equipmentId`, `requestDate`, `removalReason`, `quantityToRemove`) VALUES
-(9, 127, '2023-11-20 23:18:00', 'Good', 5);
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -159,7 +149,17 @@ CREATE TABLE IF NOT EXISTS `equipmentupdates` (
   `valueToAdd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`updateId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `equipmentupdates`
+--
+
+INSERT INTO `equipmentupdates` (`updateId`, `equipmentId`, `updateDate`, `originalValue`, `valueToAdd`) VALUES
+(1, 132, '2023-11-21 21:47:00', '13', '1'),
+(2, 132, '2023-11-21 21:48:00', '14', '1'),
+(3, 132, '2023-11-21 22:05:00', '15', '1'),
+(4, 134, '2023-11-23 09:19:00', '2', '3');
 
 -- --------------------------------------------------------
 
@@ -200,55 +200,36 @@ CREATE TABLE IF NOT EXISTS `login_logout_log` (
   `event_type` enum('login','logout') NOT NULL,
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=419 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=541 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `login_logout_log`
 --
 
 INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
-(418, 'admin', 'admin', 'login', '2023-11-21 16:03:35'),
-(417, 'adder', 'equipment adder', 'logout', '2023-11-21 16:03:27'),
-(416, 'adder', 'equipment adder', 'login', '2023-11-21 16:02:34'),
-(415, 'admin', 'admin', 'logout', '2023-11-21 16:02:28'),
-(414, 'admin', 'admin', 'login', '2023-11-20 23:10:33'),
-(413, 'adder', 'equipment adder', 'logout', '2023-11-20 23:10:29'),
-(412, 'adder', 'equipment adder', 'login', '2023-11-20 23:09:47'),
-(411, 'remover', 'equipment remover', 'logout', '2023-11-20 23:09:38'),
-(410, 'remover', 'equipment remover', 'login', '2023-11-20 20:48:40'),
-(409, 'admin', 'admin', 'logout', '2023-11-20 20:48:34'),
-(408, 'admin', 'admin', 'login', '2023-11-20 20:47:41'),
-(407, 'adder', 'equipment adder', 'logout', '2023-11-20 20:47:36'),
-(406, 'adder', 'equipment adder', 'login', '2023-11-20 19:30:15'),
-(405, 'admin', 'admin', 'logout', '2023-11-20 19:30:09'),
-(403, 'adder', 'equipment adder', 'logout', '2023-11-20 19:29:29'),
-(404, 'admin', 'admin', 'login', '2023-11-20 19:29:34'),
-(402, 'adder', 'equipment adder', 'login', '2023-11-20 19:20:55'),
-(401, 'admin', 'admin', 'logout', '2023-11-20 19:20:51'),
-(400, 'admin', 'admin', 'login', '2023-11-20 19:20:06'),
-(399, 'adder', 'equipment adder', 'logout', '2023-11-20 19:20:00'),
-(398, 'adder', 'equipment adder', 'login', '2023-11-20 19:18:56'),
-(397, 'admin', 'admin', 'logout', '2023-11-20 19:18:52'),
-(396, 'admin', 'admin', 'login', '2023-11-20 19:15:44'),
-(395, 'adder', 'equipment adder', 'logout', '2023-11-20 19:15:36'),
-(394, 'adder', 'equipment adder', 'login', '2023-11-20 15:38:44'),
-(393, 'remover', 'equipment remover', 'logout', '2023-11-20 15:38:39'),
-(392, 'remover', 'equipment remover', 'login', '2023-11-20 15:30:28'),
-(391, 'adder', 'equipment adder', 'logout', '2023-11-20 15:30:23'),
-(390, 'adder', 'equipment adder', 'login', '2023-11-20 15:29:31'),
-(389, 'admin', 'admin', 'logout', '2023-11-20 15:21:24'),
-(388, 'admin', 'admin', 'login', '2023-11-20 15:20:06'),
-(387, 'adder', 'equipment adder', 'logout', '2023-11-20 15:20:02'),
-(386, 'adder', 'equipment adder', 'login', '2023-11-20 14:57:43'),
-(385, 'admin', 'admin', 'logout', '2023-11-20 14:57:39'),
-(384, 'admin', 'admin', 'login', '2023-11-20 14:53:44'),
-(383, 'adder', 'equipment adder', 'logout', '2023-11-20 14:53:36'),
-(382, 'adder', 'equipment adder', 'login', '2023-11-20 11:49:32'),
-(381, 'admin', 'admin', 'logout', '2023-11-20 11:49:27'),
-(380, 'admin', 'admin', 'login', '2023-11-20 11:48:37'),
-(379, 'adder', 'equipment adder', 'logout', '2023-11-20 11:48:33'),
-(378, 'adder', 'equipment adder', 'login', '2023-11-20 11:17:43'),
-(377, 'admin', 'admin', 'logout', '2023-11-20 11:17:37');
+(540, 'remover', 'equipment remover', 'logout', '2023-11-25 13:21:26'),
+(539, 'remover', 'equipment remover', 'login', '2023-11-25 13:15:03'),
+(538, 'adder', 'equipment adder', 'logout', '2023-11-25 13:14:47'),
+(537, 'adder', 'equipment adder', 'login', '2023-11-25 13:13:53'),
+(536, 'admin', 'admin', 'logout', '2023-11-25 13:13:45'),
+(535, 'admin', 'admin', 'login', '2023-11-25 13:09:20'),
+(534, 'admin', 'admin', 'login', '2023-11-23 18:07:45'),
+(533, 'admin', 'Admin', 'logout', '2023-11-23 18:07:40'),
+(532, 'admin', 'Admin', 'login', '2023-11-23 18:06:35'),
+(531, 'adder', 'equipment adder', 'logout', '2023-11-23 18:06:31'),
+(530, 'adder', 'equipment adder', 'login', '2023-11-23 18:06:27'),
+(529, 'remover', 'equipment remover', 'logout', '2023-11-23 18:06:22'),
+(528, 'remover', 'equipment remover', 'login', '2023-11-23 18:06:17'),
+(527, 'admin', 'Admin', 'logout', '2023-11-23 18:06:09'),
+(526, 'admin', 'Admin', 'login', '2023-11-23 18:05:58'),
+(525, 'admin', 'admin', 'logout', '2023-11-23 18:05:52'),
+(524, 'admin', 'admin', 'login', '2023-11-23 17:46:47'),
+(523, 'remover', 'equipment remover', 'logout', '2023-11-23 17:46:40'),
+(522, 'remover', 'equipment remover', 'login', '2023-11-23 17:46:31'),
+(521, 'remover', 'equipment remover', 'logout', '2023-11-23 17:45:45'),
+(520, 'remover', 'equipment remover', 'login', '2023-11-23 17:39:51'),
+(518, 'admin', 'admin', 'login', '2023-11-23 17:35:58'),
+(519, 'admin', 'admin', 'logout', '2023-11-23 17:39:45');
 
 -- --------------------------------------------------------
 
@@ -271,10 +252,10 @@ CREATE TABLE IF NOT EXISTS `tbempinfo` (
 
 INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
 (1, 'aguila', 'nina', 'cics'),
-(2, 'Doe', 'John', 'HR'),
-(3, 'Smith', 'Alice', 'IT'),
-(4, 'Johnson', 'Bob', 'Finance'),
-(5, 'Williams', 'Emily', 'Marketing');
+(2, 'Doe', 'John', 'cabe'),
+(3, 'Smith', 'Alice', 'cas'),
+(4, 'Johnson', 'Bob', 'cit'),
+(5, 'Williams', 'Emily', 'cte');
 
 -- --------------------------------------------------------
 
@@ -317,19 +298,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   `empid` int DEFAULT NULL,
   PRIMARY KEY (`userId`),
   KEY `fk_empid` (`empid`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`userId`, `userName`, `userRole`, `passwordHash`, `firstName`, `lastName`, `userImage`, `empid`) VALUES
-(23, 'remover', 'equipment remover', '$2y$10$9nm/c/UWrWGX6DwtOimiH.GpZgPihFFKNQtTpoax2EdYeOZT0Q6.u', 'Edbert', 'Plopenio', 'user_images/ed_img (1).png', NULL),
-(22, 'adder', 'equipment adder', '$2y$10$3Pw3UFlhHGSXECAt5/xsJecZJngwDXKsQa3LRPw9FvWt9M0jtX72K', 'Andrea', 'Bernardo', 'user_images/13.webp', NULL),
-(21, 'admin', 'admin', '$2y$10$YsmBAIuqRtkrh9d5UN3/feONys9EF00Of8M8nlORvYYRLtc8cLDOK', 'Kath', 'Brillantes', 'user_images/9.webp', NULL),
-(24, 'user1', 'admin', 'hash1', 'John', 'Doe', 'image1.jpg', 2),
-(25, 'user2', 'equipment adder', 'hash2', 'Alice', 'Smith', 'image2.jpg', 3),
-(26, 'user3', 'equipment remover', 'hash3', 'Bob', 'Johnson', 'image3.jpg', 4);
+(34, 'remover', 'equipment remover', '$2y$10$I5CyGkUXdvjpGWk/MAeODeVxMtSMwOQ5bWqWDEkP5JFRtfzFXgWba', 'John', 'Doe', 'user_images/655f239e71b87_mig_img.png', 2),
+(35, 'admin', 'admin', '$2y$10$43cS8hPoNaep2SMy0XC8I.19LXlnowvFU1GktEtuKDajsSICZAp8q', 'Alice', 'Smith', 'user_images/655f23d653aa7_ed_img (1).png', 3),
+(36, 'adder', 'equipment adder', '$2y$10$DyN5bQ9H7mhx1zR/eqjvmuw7VSo/tn5Sq/MSkQEdghZ202jBSSCu.', 'nina', 'aguila', 'user_images/655f23f7e8550_tiffa_img.png', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
