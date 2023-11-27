@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 21, 2023 at 09:15 AM
+-- Generation Time: Nov 26, 2023 at 03:01 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -18,36 +18,225 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_ba3102`
+-- Database: `group8andgroup5`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_tbl`
+-- Table structure for table `account_tbl`
 --
 
-DROP TABLE IF EXISTS `login_tbl`;
-CREATE TABLE IF NOT EXISTS `login_tbl` (
+DROP TABLE IF EXISTS `account_tbl`;
+CREATE TABLE IF NOT EXISTS `account_tbl` (
   `AdminId` int NOT NULL AUTO_INCREMENT,
   `empid` int NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`AdminId`),
   KEY `empid` (`empid`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `login_tbl`
+-- Dumping data for table `account_tbl`
 --
 
-INSERT INTO `login_tbl` (`AdminId`, `empid`, `username`, `password`) VALUES
+INSERT INTO `account_tbl` (`AdminId`, `empid`, `username`, `password`) VALUES
 (2, 1, 'nina', 'nina123'),
 (3, 2, 'patrick', 'patrick123'),
 (4, 3, 'kim', 'kim123'),
 (5, 4, 'matt', 'matt123'),
 (6, 5, 'cyrus', 'cyrus123'),
 (7, 6, 'jv', 'jv123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `addquantity`
+--
+
+DROP TABLE IF EXISTS `addquantity`;
+CREATE TABLE IF NOT EXISTS `addquantity` (
+  `equipmentId` int NOT NULL,
+  `quantity` int DEFAULT NULL,
+  `purchaseDate` datetime DEFAULT NULL,
+  `equipmentCondition` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`equipmentId`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `addquantity`
+--
+
+INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`) VALUES
+(1, 2, '2023-11-23 17:47:00', 'Like New');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `archived_equipment`
+--
+
+DROP TABLE IF EXISTS `archived_equipment`;
+CREATE TABLE IF NOT EXISTS `archived_equipment` (
+  `archivedId` int NOT NULL AUTO_INCREMENT,
+  `equipmentId` int NOT NULL,
+  `archivedDate` datetime DEFAULT NULL,
+  `equipmentName` varchar(255) NOT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `description` text,
+  `equipmentImage` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`archivedId`)
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipment`
+--
+
+DROP TABLE IF EXISTS `equipment`;
+CREATE TABLE IF NOT EXISTS `equipment` (
+  `equipmentId` int NOT NULL AUTO_INCREMENT,
+  `equipmentName` varchar(255) NOT NULL,
+  `equipmentCategoryId` int NOT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `description` text,
+  `locationId` int DEFAULT NULL,
+  `equipmentImage` blob,
+  PRIMARY KEY (`equipmentId`),
+  KEY `equipmentCategoryId` (`equipmentCategoryId`),
+  KEY `locationId` (`locationId`)
+) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `equipment`
+--
+
+INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`) VALUES
+(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067),
+(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067),
+(3, 'Tennis Racket', 3, 'Brand C', 'Description for Tennis Racket', 3, 0x2f5349412f696d616765732f74656e6e69735f7261636b65742e6a7067),
+(4, 'Baseball Bat', 4, 'Brand D', 'Description for Baseball Bat', 4, 0x2f5349412f696d616765732f6261736562616c6c5f6261742e6a706567),
+(5, 'Volleyball', 5, 'Brand E', 'Description for Volleyball', 5, 0x2f5349412f696d616765732f766f6c6c657962616c6c2e6a706567);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipmentcategories`
+--
+
+DROP TABLE IF EXISTS `equipmentcategories`;
+CREATE TABLE IF NOT EXISTS `equipmentcategories` (
+  `categoryId` int NOT NULL AUTO_INCREMENT,
+  `categoryName` varchar(255) NOT NULL,
+  PRIMARY KEY (`categoryId`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `equipmentcategories`
+--
+
+INSERT INTO `equipmentcategories` (`categoryId`, `categoryName`) VALUES
+(1, 'Soccer'),
+(2, 'Basketball'),
+(3, 'Tennis'),
+(4, 'Baseball'),
+(5, 'Volleyball');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipmentremovalrequests`
+--
+
+DROP TABLE IF EXISTS `equipmentremovalrequests`;
+CREATE TABLE IF NOT EXISTS `equipmentremovalrequests` (
+  `requestId` int NOT NULL AUTO_INCREMENT,
+  `equipmentId` int NOT NULL,
+  `requestDate` datetime DEFAULT NULL,
+  `removalReason` text,
+  `quantityToRemove` int DEFAULT NULL,
+  PRIMARY KEY (`requestId`),
+  KEY `equipmentId` (`equipmentId`)
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipmentupdates`
+--
+
+DROP TABLE IF EXISTS `equipmentupdates`;
+CREATE TABLE IF NOT EXISTS `equipmentupdates` (
+  `updateId` int NOT NULL AUTO_INCREMENT,
+  `equipmentId` int NOT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `originalValue` text,
+  `valueToAdd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  PRIMARY KEY (`updateId`),
+  KEY `equipmentId` (`equipmentId`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `equipmentupdates`
+--
+
+INSERT INTO `equipmentupdates` (`updateId`, `equipmentId`, `updateDate`, `originalValue`, `valueToAdd`) VALUES
+(1, 132, '2023-11-21 21:47:00', '13', '1'),
+(2, 132, '2023-11-21 21:48:00', '14', '1'),
+(3, 132, '2023-11-21 22:05:00', '15', '1'),
+(4, 134, '2023-11-23 09:19:00', '2', '3');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `locations`
+--
+
+DROP TABLE IF EXISTS `locations`;
+CREATE TABLE IF NOT EXISTS `locations` (
+  `locationId` int NOT NULL AUTO_INCREMENT,
+  `locationName` varchar(255) NOT NULL,
+  `locationDescription` text,
+  PRIMARY KEY (`locationId`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `locations`
+--
+
+INSERT INTO `locations` (`locationId`, `locationName`, `locationDescription`) VALUES
+(1, 'Equipment Room 1', 'Description for Equipment Room 1'),
+(2, 'Equipment Room 2', 'Description for Equipment Room 2'),
+(3, 'Storage Area A', 'Description for Storage Area A'),
+(4, 'Storage Area B', 'Description for Storage Area B'),
+(5, 'Gymnasium', 'Description for Gymnasium');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_logout_log`
+--
+
+DROP TABLE IF EXISTS `login_logout_log`;
+CREATE TABLE IF NOT EXISTS `login_logout_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `userRole` varchar(255) NOT NULL,
+  `event_type` enum('login','logout') NOT NULL,
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=565 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `login_logout_log`
+--
+
+INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
+(564, 'kim', 'Admin', 'logout', '2023-11-26 22:59:45'),
+(563, 'kim', 'Visitor Management Admin', 'login', '2023-11-26 22:59:40');
 
 -- --------------------------------------------------------
 
@@ -161,10 +350,10 @@ INSERT INTO `visitor_infotbl` (`visitor_no`, `visitor_name`, `visitor_add`, `vis
 --
 
 --
--- Constraints for table `login_tbl`
+-- Constraints for table `account_tbl`
 --
-ALTER TABLE `login_tbl`
-  ADD CONSTRAINT `login_tbl_ibfk_1` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
+ALTER TABLE `account_tbl`
+  ADD CONSTRAINT `account_tbl_ibfk_1` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
 
 --
 -- Constraints for table `visiting_infotbl`
