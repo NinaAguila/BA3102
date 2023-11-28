@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 21, 2023 at 08:46 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1:3306
+-- Generation Time: Nov 28, 2023 at 07:29 AM
+-- Server version: 8.0.31
+-- PHP Version: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,97 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_ba3102`
+-- Database: `aa`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `instocks_details`
+--
+
+DROP TABLE IF EXISTS `instocks_details`;
+CREATE TABLE IF NOT EXISTS `instocks_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `added_qnt` int DEFAULT NULL,
+  `received_date` date DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `instocks_details`
+--
+
+INSERT INTO `instocks_details` (`id`, `product_id`, `added_qnt`, `received_date`) VALUES
+(1, 3, 2, '2023-11-28'),
+(2, 4, 5, '2023-11-28'),
+(3, 5, 10, '2023-11-28');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `in_stocks`
+--
+
+DROP TABLE IF EXISTS `in_stocks`;
+CREATE TABLE IF NOT EXISTS `in_stocks` (
+  `product_id` int NOT NULL,
+  `stocks_qnt` int NOT NULL DEFAULT '0',
+  KEY `FK_Products_Stocks` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `in_stocks`
+--
+
+INSERT INTO `in_stocks` (`product_id`, `stocks_qnt`) VALUES
+(3, 750),
+(4, 182),
+(5, 10),
+(6, 25),
+(7, 90),
+(8, 100),
+(9, 40),
+(10, 55),
+(11, 75),
+(12, 25),
+(13, 60),
+(14, 85),
+(15, 95),
+(16, 105),
+(17, 45),
+(18, 60),
+(19, 0),
+(20, 0),
+(21, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `outstocks_details`
+--
+
+DROP TABLE IF EXISTS `outstocks_details`;
+CREATE TABLE IF NOT EXISTS `outstocks_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `out_qnt` int DEFAULT NULL,
+  `received_date` date DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `outstocks_details`
+--
+
+INSERT INTO `outstocks_details` (`id`, `product_id`, `out_qnt`, `received_date`) VALUES
+(4, 3, 30, '2023-11-28'),
+(1, 6, 5, '2023-11-28'),
+(2, 8, 10, '2023-11-28'),
+(3, 13, 5, '2023-11-28');
 
 -- --------------------------------------------------------
 
@@ -27,22 +116,40 @@ SET time_zone = "+00:00";
 -- Table structure for table `products`
 --
 
-CREATE TABLE `products` (
-  `product_id` int(11) NOT NULL,
-  `product_name` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL,
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE IF NOT EXISTS `products` (
+  `product_id` int NOT NULL,
+  `product_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
   `price` decimal(10,2) NOT NULL,
-  `quantity_available` int(11) NOT NULL,
-  `image` mediumblob DEFAULT NULL
+  `image` mediumblob,
+  KEY `idx_product_id` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `quantity_available`, `image`) VALUES
-(1, 'Product A', 'Description for Product Aaaaaa', 25.00, 100, NULL),
-(21, 'Product A', 'Description for Product A', 25.00, 100, NULL);
+INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `image`) VALUES
+(3, 'Product C', 'Description for Product Caaaaaaaaaaaaaaaat', '30.00', NULL),
+(4, 'Product D', 'Description for Product D', '35.00', NULL),
+(5, 'Product E', 'Description for Product E', '40.00', NULL),
+(6, 'Product F', 'Description for Product F', '45.00', NULL),
+(7, 'Product G', 'Description for Product G', '50.00', NULL),
+(8, 'Product H', 'Description for Product H', '55.00', NULL),
+(9, 'Product I', 'Description for Product I', '60.00', NULL),
+(10, 'Product J', 'Description for Product J', '65.00', NULL),
+(11, 'Product K', 'Description for Product K', '70.00', NULL),
+(12, 'Product L', 'Description for Product L', '75.00', NULL),
+(13, 'Product M', 'Description for Product M', '80.00', NULL),
+(14, 'Product N', 'Description for Product N', '85.00', NULL),
+(15, 'Product O', 'Description for Product O', '90.00', NULL),
+(16, 'Product P', 'Description for Product P', '95.00', NULL),
+(17, 'Product Q', 'Description for Product Q', '100.00', NULL),
+(18, 'Product R', 'Description for Product R', '105.00', NULL),
+(19, 'GGs', 'GGs', '123.00', NULL),
+(20, 'GGG', 'GGG', '123.00', NULL),
+(21, 'GGG', 'GG', '3.00', NULL);
 
 -- --------------------------------------------------------
 
@@ -50,12 +157,13 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `q
 -- Table structure for table `rgouser`
 --
 
-CREATE TABLE `rgouser` (
-  `id` int(11) NOT NULL,
-  `empid` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('admin','employee','','') NOT NULL
+DROP TABLE IF EXISTS `rgouser`;
+CREATE TABLE IF NOT EXISTS `rgouser` (
+  `id` int NOT NULL,
+  `empid` int NOT NULL,
+  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` enum('admin','employee','client','') COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -63,8 +171,9 @@ CREATE TABLE `rgouser` (
 --
 
 INSERT INTO `rgouser` (`id`, `empid`, `username`, `password`, `role`) VALUES
-(1, 1, 'admin', 'RGO', 'admin'),
-(2, 2, 'employee', 'RGO', 'employee');
+(1, 1, 'admin', 'admRGO', 'admin'),
+(2, 2, 'employee', 'empRGO', 'employee'),
+(3, 0, 'client', 'RGO', 'client');
 
 -- --------------------------------------------------------
 
@@ -72,11 +181,12 @@ INSERT INTO `rgouser` (`id`, `empid`, `username`, `password`, `role`) VALUES
 -- Table structure for table `tbempinfo`
 --
 
-CREATE TABLE `tbempinfo` (
-  `empid` int(11) NOT NULL,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `department` varchar(30) NOT NULL
+DROP TABLE IF EXISTS `tbempinfo`;
+CREATE TABLE IF NOT EXISTS `tbempinfo` (
+  `empid` int NOT NULL,
+  `lastname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `firstname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `department` varchar(30) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -93,11 +203,12 @@ INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
 -- Table structure for table `tb_studinfo`
 --
 
-CREATE TABLE `tb_studinfo` (
-  `studid` int(11) NOT NULL,
-  `lastname` varchar(25) NOT NULL,
-  `firstname` varchar(25) NOT NULL,
-  `course` varchar(20) NOT NULL
+DROP TABLE IF EXISTS `tb_studinfo`;
+CREATE TABLE IF NOT EXISTS `tb_studinfo` (
+  `studid` int NOT NULL,
+  `lastname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `firstname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `course` varchar(20) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -108,50 +219,27 @@ INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
 (1, 'parker', 'peter', 'bsit'),
 (2, 'kent', 'clark', 'bscs');
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `transactions`
+-- Constraints for dumped tables
 --
 
-CREATE TABLE `transactions` (
-  `transaction_id` int(11) NOT NULL,
-  `employee_id` int(11) DEFAULT NULL,
-  `transaction_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `total_cost` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Constraints for table `instocks_details`
+--
+ALTER TABLE `instocks_details`
+  ADD CONSTRAINT `instocks_details_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
--- Dumping data for table `transactions`
+-- Constraints for table `in_stocks`
 --
-
-INSERT INTO `transactions` (`transaction_id`, `employee_id`, `transaction_date`, `total_cost`) VALUES
-(1, 2, '2023-11-19 02:45:59', 75.00),
-(2, 3, '2023-11-19 02:45:59', 100.50);
-
--- --------------------------------------------------------
+ALTER TABLE `in_stocks`
+  ADD CONSTRAINT `in_stocks_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
--- Table structure for table `transaction_details`
+-- Constraints for table `outstocks_details`
 --
-
-CREATE TABLE `transaction_details` (
-  `transaction_detail_id` int(11) NOT NULL,
-  `transaction_id` int(11) DEFAULT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `quantity_sold` int(11) NOT NULL,
-  `unit_price` decimal(10,2) NOT NULL,
-  `subtotal` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `transaction_details`
---
-
-INSERT INTO `transaction_details` (`transaction_detail_id`, `transaction_id`, `product_id`, `quantity_sold`, `unit_price`, `subtotal`) VALUES
-(1, 1, 1, 2, 25.00, 50.00),
-(2, 1, 2, 1, 35.50, 35.50),
-(3, 2, 3, 3, 50.25, 150.75);
+ALTER TABLE `outstocks_details`
+  ADD CONSTRAINT `outstocks_details_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
