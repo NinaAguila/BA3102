@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 28, 2023 at 07:29 AM
+-- Generation Time: Nov 28, 2023 at 07:40 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `instocks_details`;
 CREATE TABLE IF NOT EXISTS `instocks_details` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
   `product_id` int NOT NULL,
   `added_qnt` int DEFAULT NULL,
   `received_date` date DEFAULT NULL,
@@ -41,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `instocks_details` (
 -- Dumping data for table `instocks_details`
 --
 
-INSERT INTO `instocks_details` (`id`, `product_id`, `added_qnt`, `received_date`) VALUES
-(1, 3, 2, '2023-11-28'),
-(2, 4, 5, '2023-11-28'),
-(3, 5, 10, '2023-11-28');
+INSERT INTO `instocks_details` (`id`, `empid`, `product_id`, `added_qnt`, `received_date`) VALUES
+(1, 0, 3, 2, '2023-11-28'),
+(2, 0, 4, 5, '2023-11-28'),
+(3, 0, 5, 10, '2023-11-28');
 
 -- --------------------------------------------------------
 
@@ -93,6 +94,7 @@ INSERT INTO `in_stocks` (`product_id`, `stocks_qnt`) VALUES
 DROP TABLE IF EXISTS `outstocks_details`;
 CREATE TABLE IF NOT EXISTS `outstocks_details` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
   `product_id` int NOT NULL,
   `out_qnt` int DEFAULT NULL,
   `received_date` date DEFAULT NULL,
@@ -104,11 +106,11 @@ CREATE TABLE IF NOT EXISTS `outstocks_details` (
 -- Dumping data for table `outstocks_details`
 --
 
-INSERT INTO `outstocks_details` (`id`, `product_id`, `out_qnt`, `received_date`) VALUES
-(4, 3, 30, '2023-11-28'),
-(1, 6, 5, '2023-11-28'),
-(2, 8, 10, '2023-11-28'),
-(3, 13, 5, '2023-11-28');
+INSERT INTO `outstocks_details` (`id`, `empid`, `product_id`, `out_qnt`, `received_date`) VALUES
+(4, 0, 3, 30, '2023-11-28'),
+(1, 0, 6, 5, '2023-11-28'),
+(2, 0, 8, 10, '2023-11-28'),
+(3, 0, 13, 5, '2023-11-28');
 
 -- --------------------------------------------------------
 
