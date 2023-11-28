@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 25, 2023 at 05:25 AM
+-- Generation Time: Nov 28, 2023 at 03:29 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `addquantity` (
   `quantity` int DEFAULT NULL,
   `purchaseDate` datetime DEFAULT NULL,
   `equipmentCondition` varchar(255) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`equipmentId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -40,8 +41,9 @@ CREATE TABLE IF NOT EXISTS `addquantity` (
 -- Dumping data for table `addquantity`
 --
 
-INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`) VALUES
-(1, 2, '2023-11-23 17:47:00', 'Like New');
+INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`, `empid`) VALUES
+(3, 2, '2023-11-28 21:16:00', 'Poor', 3),
+(2, 3, '2023-11-28 21:15:00', 'Good', 1);
 
 -- --------------------------------------------------------
 
@@ -59,8 +61,17 @@ CREATE TABLE IF NOT EXISTS `archived_equipment` (
   `quantity` int DEFAULT NULL,
   `description` text,
   `equipmentImage` varchar(255) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
+  `removalReason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`archivedId`)
-) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `archived_equipment`
+--
+
+INSERT INTO `archived_equipment` (`archivedId`, `equipmentId`, `archivedDate`, `equipmentName`, `brand`, `quantity`, `description`, `equipmentImage`, `empid`, `removalReason`) VALUES
+(48, 1, '2023-11-28 20:50:21', 'Soccer Ball', 'Brand A', 100, 'Description for Soccer Ball', '/SIA/images/soccer_ball.jpg', 2, 'Obsolete');
 
 -- --------------------------------------------------------
 
@@ -77,21 +88,20 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   `description` text,
   `locationId` int DEFAULT NULL,
   `equipmentImage` blob,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`equipmentId`),
   KEY `equipmentCategoryId` (`equipmentCategoryId`),
-  KEY `locationId` (`locationId`)
-) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `locationId` (`locationId`),
+  KEY `fk_empid` (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`) VALUES
-(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067),
-(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067),
-(3, 'Tennis Racket', 3, 'Brand C', 'Description for Tennis Racket', 3, 0x2f5349412f696d616765732f74656e6e69735f7261636b65742e6a7067),
-(4, 'Baseball Bat', 4, 'Brand D', 'Description for Baseball Bat', 4, 0x2f5349412f696d616765732f6261736562616c6c5f6261742e6a706567),
-(5, 'Volleyball', 5, 'Brand E', 'Description for Volleyball', 5, 0x2f5349412f696d616765732f766f6c6c657962616c6c2e6a706567);
+INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`, `empid`) VALUES
+(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067, 1),
+(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067, 2);
 
 -- --------------------------------------------------------
 
@@ -130,9 +140,17 @@ CREATE TABLE IF NOT EXISTS `equipmentremovalrequests` (
   `requestDate` datetime DEFAULT NULL,
   `removalReason` text,
   `quantityToRemove` int DEFAULT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`requestId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `equipmentremovalrequests`
+--
+
+INSERT INTO `equipmentremovalrequests` (`requestId`, `equipmentId`, `requestDate`, `removalReason`, `quantityToRemove`, `empid`) VALUES
+(34, 1, '2023-11-28 20:50:00', 'Obsolete', 100, 2);
 
 -- --------------------------------------------------------
 
@@ -147,19 +165,10 @@ CREATE TABLE IF NOT EXISTS `equipmentupdates` (
   `updateDate` datetime DEFAULT NULL,
   `originalValue` text,
   `valueToAdd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`updateId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `equipmentupdates`
---
-
-INSERT INTO `equipmentupdates` (`updateId`, `equipmentId`, `updateDate`, `originalValue`, `valueToAdd`) VALUES
-(1, 132, '2023-11-21 21:47:00', '13', '1'),
-(2, 132, '2023-11-21 21:48:00', '14', '1'),
-(3, 132, '2023-11-21 22:05:00', '15', '1'),
-(4, 134, '2023-11-23 09:19:00', '2', '3');
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -199,37 +208,17 @@ CREATE TABLE IF NOT EXISTS `login_logout_log` (
   `userRole` varchar(255) NOT NULL,
   `event_type` enum('login','logout') NOT NULL,
   `timestamp` datetime NOT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=541 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=634 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `login_logout_log`
 --
 
-INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
-(540, 'remover', 'equipment remover', 'logout', '2023-11-25 13:21:26'),
-(539, 'remover', 'equipment remover', 'login', '2023-11-25 13:15:03'),
-(538, 'adder', 'equipment adder', 'logout', '2023-11-25 13:14:47'),
-(537, 'adder', 'equipment adder', 'login', '2023-11-25 13:13:53'),
-(536, 'admin', 'admin', 'logout', '2023-11-25 13:13:45'),
-(535, 'admin', 'admin', 'login', '2023-11-25 13:09:20'),
-(534, 'admin', 'admin', 'login', '2023-11-23 18:07:45'),
-(533, 'admin', 'Admin', 'logout', '2023-11-23 18:07:40'),
-(532, 'admin', 'Admin', 'login', '2023-11-23 18:06:35'),
-(531, 'adder', 'equipment adder', 'logout', '2023-11-23 18:06:31'),
-(530, 'adder', 'equipment adder', 'login', '2023-11-23 18:06:27'),
-(529, 'remover', 'equipment remover', 'logout', '2023-11-23 18:06:22'),
-(528, 'remover', 'equipment remover', 'login', '2023-11-23 18:06:17'),
-(527, 'admin', 'Admin', 'logout', '2023-11-23 18:06:09'),
-(526, 'admin', 'Admin', 'login', '2023-11-23 18:05:58'),
-(525, 'admin', 'admin', 'logout', '2023-11-23 18:05:52'),
-(524, 'admin', 'admin', 'login', '2023-11-23 17:46:47'),
-(523, 'remover', 'equipment remover', 'logout', '2023-11-23 17:46:40'),
-(522, 'remover', 'equipment remover', 'login', '2023-11-23 17:46:31'),
-(521, 'remover', 'equipment remover', 'logout', '2023-11-23 17:45:45'),
-(520, 'remover', 'equipment remover', 'login', '2023-11-23 17:39:51'),
-(518, 'admin', 'admin', 'login', '2023-11-23 17:35:58'),
-(519, 'admin', 'admin', 'logout', '2023-11-23 17:39:45');
+INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`, `empid`) VALUES
+(633, 'remover', 'equipment remover', 'login', '2023-11-28 23:27:28', NULL),
+(632, 'admin', 'admin', 'logout', '2023-11-28 23:27:23', 1);
 
 -- --------------------------------------------------------
 
@@ -298,16 +287,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `empid` int DEFAULT NULL,
   PRIMARY KEY (`userId`),
   KEY `fk_empid` (`empid`)
-) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`userId`, `userName`, `userRole`, `passwordHash`, `firstName`, `lastName`, `userImage`, `empid`) VALUES
-(34, 'remover', 'equipment remover', '$2y$10$I5CyGkUXdvjpGWk/MAeODeVxMtSMwOQ5bWqWDEkP5JFRtfzFXgWba', 'John', 'Doe', 'user_images/655f239e71b87_mig_img.png', 2),
-(35, 'admin', 'admin', '$2y$10$43cS8hPoNaep2SMy0XC8I.19LXlnowvFU1GktEtuKDajsSICZAp8q', 'Alice', 'Smith', 'user_images/655f23d653aa7_ed_img (1).png', 3),
-(36, 'adder', 'equipment adder', '$2y$10$DyN5bQ9H7mhx1zR/eqjvmuw7VSo/tn5Sq/MSkQEdghZ202jBSSCu.', 'nina', 'aguila', 'user_images/655f23f7e8550_tiffa_img.png', 1);
+(45, 'remover', 'equipment remover', '$2y$10$ORIaWsSqMhOwv0FP3ChLc.2hS2.BUi44BW00x1tjTOIdcN/.jhR3O', 'John', 'Doe', 'user_images/6565faa6208f1_ericka_img.png', 2),
+(40, 'admin', 'admin', '$2y$10$8Qtz/TaSGCMmcfI1lQLd4uGQCzI4QKesE5uDFbSDGW3pgMAUd/xe2', 'nina', 'aguila', 'user_images/6565e57919e43_mig_img.png', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
