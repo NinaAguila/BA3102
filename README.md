@@ -6,7 +6,7 @@ Ebrado, Jed Enrique
 Magbojos, Zam Matthew
 Mamiit, John Victor
 
-#LOGILIBRARY: A QR-Based Log-In and Log-Out System for BSU TNEU Lipa Campus Library
+LOGILIBRARY: A QR-Based Log-In and Log-Out System for BSU TNEU Lipa Campus Library
 
 Overview
 This project implements a QR-based login and logout system for the Batangas State University (BSU) - Technological and Natural Sciences (TNEU) Lipa Campus. 
