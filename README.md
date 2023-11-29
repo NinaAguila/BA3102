@@ -38,5 +38,12 @@ Usage
 -Users should present their unique QR code to the scanner for login or logout.
 -The system will validate the QR code and perform the corresponding action.
 
+Installation
+Follow these steps to set up and run the QR-Based Login and Logout System for BSU TNEU Lipa Campus:
+Browse to the LogiLibrarySetup folder in the project directory and locate the LogiLibrarySetup.exe file.
+Run the setup file and follow the on-screen instructions to install the LogiLibrary required for QR code generation.
+Open XAMPP and start the Apache and MySQL services.
+Run the application.
+
 Contact
 For any inquiries or issues, please contact MateoDuke21 at mattdncr15@gmail.com.
