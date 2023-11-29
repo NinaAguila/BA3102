@@ -1,5 +1,4 @@
-# BA3102
-# Group 2 
+# BA3102: Group 2 
 Members: 
 Evangelista, Jhon Matthew, E.
 Punzalan, Jhonathan T.
