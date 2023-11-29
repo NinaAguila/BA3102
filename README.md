@@ -37,3 +37,6 @@ Usage
 -Launch the application.
 -Users should present their unique QR code to the scanner for login or logout.
 -The system will validate the QR code and perform the corresponding action.
+
+Contact
+For any inquiries or issues, please contact MateoDuke21 at mattdncr15@gmail.com.
