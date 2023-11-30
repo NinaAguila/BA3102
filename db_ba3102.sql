@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 30, 2023 at 05:32 PM
+-- Generation Time: Nov 30, 2023 at 05:37 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -364,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   KEY `equipmentCategoryId` (`equipmentCategoryId`),
   KEY `locationId` (`locationId`),
   KEY `fk_empid` (`empid`)
-) ENGINE=MyISAM AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `equipment`
@@ -373,7 +373,8 @@ CREATE TABLE IF NOT EXISTS `equipment` (
 INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`, `empid`) VALUES
 (144, 'BasketBall', 2, 'Adidas', 'orange and round', 4, 0x696d616765732f6261736b657462616c6c5f6164696461732e6a706567, 1),
 (143, 'Baseball Bat', 4, 'Rawlings', 'Color Blue', 1, 0x696d616765732f6261736562616c6c6261745f7261776c696e67732e6a7067, 1),
-(145, 'volleyballl', 5, 'Mikasa', 'Round', 5, 0x696d616765732f766f6c6c657962616c6c5f6d696b6173612e6a706567, 1);
+(145, 'volleyballl', 5, 'Mikasa', 'Round', 5, 0x696d616765732f766f6c6c657962616c6c5f6d696b6173612e6a706567, 1),
+(146, 'Soccer Ball', 1, 'Nike', 'Blue', 3, 0x696d616765732f736f6363657262616c6c5f6e696b652e6a706567, 1);
 
 -- --------------------------------------------------------
 
@@ -553,7 +554,7 @@ CREATE TABLE IF NOT EXISTS `login_logout_log` (
   `timestamp` datetime NOT NULL,
   `empid` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=662 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=663 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `login_logout_log`
@@ -586,7 +587,8 @@ INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `tim
 (658, 'adder', 'equipment adder', 'login', '2023-12-01 01:27:03', NULL),
 (659, 'adder', 'equipment adder', 'logout', '2023-12-01 01:28:15', 2),
 (660, 'remover', 'equipment remover', 'login', '2023-12-01 01:28:20', NULL),
-(661, 'remover', 'equipment remover', 'logout', '2023-12-01 01:29:45', 11);
+(661, 'remover', 'equipment remover', 'logout', '2023-12-01 01:29:45', 11),
+(662, 'admin', 'admin', 'login', '2023-12-01 01:36:29', NULL);
 
 -- --------------------------------------------------------
 
