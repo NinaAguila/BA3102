@@ -49,37 +49,12 @@ Thank you for choosing UniHire! Follow the steps below to install and run the pr
 
 Before you begin, ensure you have the following software installed on your system:
 
-- **XAMPP or Wampserver64:** UniHire relies on a MySQL database with the InnoDB storage engine. Install XAMPP from [https://www.apachefriends.org/](https://www.apachefriends.org/) or Wampserver64 from [https://www.wampserver.com/](https://www.wampserver.com/).
+- **XAMPP or Wampserver64:** UniHire relies on a MySQL database with the InnoDB storage engine. Install XAMPP or Wampserver64.
+  
+- **Git Bash:** Install Git Bash.
 
-- **Git Bash:** Install Git Bash from [https://gitforwindows.org/](https://gitforwindows.org/).
+- **Visual Studio Code:** Download and install Visual Studio Code.
 
-- **Visual Studio Code:** Download and install Visual Studio Code from [https://code.visualstudio.com/](https://code.visualstudio.com/).
-
-### Clone the Repository
-
-1. Open your terminal or command prompt.
-
-2. Clone the UniHire repository using the following command:
-
-    ```bash
-    git clone [repository_url]
-    ```
-
-    Replace `[repository_url]` with the actual URL of the UniHire repository.
-
-### Install Dependencies
-
-1. Navigate to the project directory:
-
-    ```bash
-    cd UniHire
-    ```
-
-2. Install project dependencies:
-
-    ```bash
-    npm install
-    ```
 
 ### Create Database
 
@@ -89,7 +64,7 @@ Before you begin, ensure you have the following software installed on your syste
 
 ### Run the Application
 
-1. Open your web browser and go to [http://localhost:3000](http://localhost:3000) to access the UniHire web portal.
+1. Open your web browser and go to "localhost/folderName/fileName - "localhost/UniHire/homepage.php" to access the UniHire web portal.
 
 ### Access Admin Dashboard
 
