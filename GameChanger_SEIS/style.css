@@ -1,0 +1,192 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* Target the user's logo specifically */
+.user .logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+}
+
+.title{
+    font-size: 21px;
+    padding-top: 40px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    padding-left: 10px;
+    transition: opacity 0.3s;
+}
+
+.i{
+    width: 50px;
+    float: left;
+    padding-top: 40px;
+}
+
+.top{
+    align-items: center;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 80px;
+    background-color: #03045e;
+    padding: .4rem .8rem;
+    transition: all 0.5s ease;
+}
+
+
+.sidebar.active ~ .main-content {
+    left: 250px;
+    width: calc(100% - 250px);
+}
+
+.sidebar.active {
+    width: 250px;
+}
+
+.sidebar #btn {
+    position: relative;
+    color: white;
+    top: .4rem;
+    left: 50%;
+    font-size: 1.5rem;
+    line-height: 50px;
+    transform: translate(-50%);
+    cursor: pointer;
+    padding-top: 20px;
+}
+
+.sidebar.active #btn {
+    left: 90%;
+}
+
+.sidebar .top .logo {
+    color: #fff;
+    display: flex;
+    height: 50px;
+    width: 100%;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.sidebar.active .top .logo {
+    opacity: 1;
+}
+
+
+.user {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.user p {
+    color: #fff;
+    opacity: 1;
+    margin-left: 1rem;
+    font-size: 14px; /* Adjust the font size as needed */
+}
+
+.user .role .bold{
+    font-weight: 600;
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+}
+
+
+.sidebar p {
+    opacity: 0;
+}
+
+.sidebar.active p {
+    opacity: 1;
+}
+
+.sidebar ul li {
+    position: relative;
+    list-style-type: none;
+    height: 50px;
+    width: 90%;
+    margin: 0.8rem auto;
+    line-height: 50px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 0.8rem;
+}
+
+.sidebar ul li a:hover {
+    background-color: #fff;
+    color: #12171e;
+}
+
+.sidebar ul li a i {
+    min-width: 50px;
+    text-align: center;
+    height: 50px;
+    border-radius: 50%;
+    line-height: 50px;
+}
+
+.sidebar .nav-item {
+    opacity: 0;
+}
+
+.sidebar.active .nav-item {
+    opacity: 1;
+}
+
+.sidebar ul li .tooltip {
+    position: absolute;
+    left: 125px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0.05rem 0.7rem rgba(0, 0, 0, 0.2);
+    border-radius: 0.6rem;
+    padding: 0.4rem 1.2rem;
+    line-height: 1.8rem;
+    z-index: 20;
+    opacity: 0;
+}
+
+.sidebar ul li:hover .tooltip {
+    opacity: 1;
+}
+
+.sidebar.active ul li .tooltip {
+    display: none;
+}
+
+/* Existing styles for .main-content */
+.main-content {
+    position: relative;
+    min-height: 100vh;
+    top: 0;
+    left: 80px; /* Adjust to match the sidebar width */
+    transition: all 0.5s ease;
+    width: calc(100% - 80px); /* Adjust to match the sidebar width */
+    padding: 1rem;
+    /* Remove or update the background properties here */
+    
+}
+
+.lorem{
+    font-size: xx-large;
+}
+
+
