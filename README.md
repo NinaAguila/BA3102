@@ -1,4 +1,4 @@
-# GameChanger: Sports Equipment Inventory System 🚀 
+# GameChanger: Sports Equipment Inventory System for Batangas State University TNEU Lipa Campus🚀 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
