@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 26, 2023 at 03:01 PM
+-- Generation Time: Nov 29, 2023 at 01:32 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -18,8 +18,151 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `group8andgroup5`
+-- Database: `db_ba3102`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+DROP PROCEDURE IF EXISTS `SP_DeleteAppeal`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DeleteAppeal` (IN `inputAppeal` INT)   BEGIN
+    DELETE FROM tbappeal WHERE appealid = inputAppeal;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_DeleteViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DeleteViolationReport` (IN `inputViolationID` INT)   BEGIN
+    DELETE FROM tbviolationreport WHERE violationid = inputViolationID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetAdminAccount`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetAdminAccount` (IN `inputAdminUsername` VARCHAR(255))   BEGIN
+SELECT tbadminaccount.adminid, tbadminaccount.empid, tbadminaccount.username, tbempinfo.firstname, tbempinfo.lastname, tbadminaccount.passwordencrypted FROM tbadminaccount INNER JOIN tbempinfo ON tbadminaccount.empid = tbempinfo.empid
+WHERE tbadminaccount.username = inputAdminUsername;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetAppeals`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetAppeals` (IN `sortOption` VARCHAR(255))   BEGIN
+SELECT tbappeal.appealid,  tbviolationreport.violationid, tb_studinfo.studid, CONCAT(tb_studinfo.firstname, ' ',  tb_studinfo.lastname) AS name, tbviolationtypes.violationame, tbstudentdepartment.department, tb_studinfo.course, tbappeal.date AS appealdate, tbviolationtypes.violationame, tbviolationreport.violationdate, tbviolationreport.violationtime, CONCAT(tbempinfo.firstname, ' ', tbempinfo.lastname) AS staffname, tbviolationreport.remarks, tbappeal.appeal, tbappeal.date, tbviolationreport.evidence, tbviolationreport.status
+    FROM tbappeal
+    INNER JOIN tbviolationreport ON tbappeal.violationid = tbviolationreport.violationid
+    INNER JOIN tb_studinfo ON tbviolationreport.studid = tb_studinfo.studid
+    INNER JOIN tbviolationtypes ON tbviolationreport.violationtypeid = tbviolationtypes.violationtypeid
+    INNER JOIN tbstudentdepartment ON tb_studinfo.course = tbstudentdepartment.course
+    INNER JOIN tbempinfo ON tbviolationreport.empid = tbempinfo.empid
+    ORDER BY
+        CASE
+            WHEN sortOption = 'option1' THEN tbviolationtypes.violationame
+            WHEN sortOption = 'option2' THEN name
+            ELSE tbappeal.appealid
+        END;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetFirstOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetFirstOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT tbviolationtypes.firstoffense
+    FROM tbviolationtypes
+    WHERE tbviolationtypes.violationtypeid = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetSecondOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetSecondOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT tbviolationtypes.secondoffense
+    FROM tbviolationtypes
+    WHERE tbviolationtypes.violationtypeid = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentAccount`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentAccount` (IN `id` INT)   BEGIN
+    SELECT 
+       tbstudentaccount.userid,
+       tbstudentaccount.studid,
+       tbstudentaccount.passwordencrypted,
+       tb_studinfo.firstname,
+       tb_studinfo.lastname,
+       tbstudentdepartment.course,
+       tbstudentdepartment.department
+    FROM tbstudentaccount
+    INNER JOIN tb_studinfo ON tbstudentaccount.studid = tb_studinfo.studid
+    INNER JOIN tbstudentdepartment ON tb_studinfo.course = tbstudentdepartment.course
+    WHERE tbstudentaccount.studid = id;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentData`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentData` (IN `srCodeParam` INT)   BEGIN
+    SELECT CONCAT(tb_studinfo.firstname, ' ', tb_studinfo.lastname) AS name, tb_studinfo.course, tbstudentdepartment.department
+    FROM tb_studinfo
+    INNER JOIN tbstudentdepartment ON tb_studinfo.course = tbstudentdepartment.course
+    WHERE tb_studinfo.studid = srCodeParam;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetStudentInfoByStudID`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetStudentInfoByStudID` (IN `inStudId` INT)   BEGIN
+    SELECT CONCAT(tb_studinfo.firstname, ' ', tb_studinfo.lastname) AS name, tb_studinfo.course, tbstudentdepartment.department
+    FROM tb_studinfo
+    INNER JOIN tbstudentdepartment ON tb_studinfo.course = tbstudentdepartment.course
+    WHERE tb_studinfo.studid = inStudId;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetThirdOffense`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetThirdOffense` (IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT tbviolationtypes.thirdoffense
+    FROM tbviolationtypes
+    WHERE tbviolationtypes.violationtypeid = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetViolationReport` (IN `p_SRCode` INT, IN `p_ViolationTypeID` INT)   BEGIN
+    SELECT *
+    FROM tbviolationreport
+    WHERE tbviolationreport.studid = p_SRCode AND tbviolationreport.violationtypeid = p_ViolationTypeID;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GetViolationTypes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GetViolationTypes` ()   BEGIN
+    SELECT tbviolationtypes.violationtypeid, tbviolationtypes.violationame FROM tbviolationtypes;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_InsertViolationReport`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_InsertViolationReport` (IN `p_SRCode` INT, IN `p_StaffID` INT, IN `p_ViolationTypeID` INT, IN `p_ViolationDate` DATE, IN `p_ViolationTime` TIME, IN `p_Remarks` VARCHAR(255), IN `p_Evidence` VARCHAR(255), IN `p_Status` VARCHAR(255))   BEGIN
+    INSERT INTO tbviolationreport (tbviolationreport.studid, tbviolationreport.empid, tbviolationreport.violationtypeid, tbviolationreport.violationdate, tbviolationreport.violationtime, tbviolationreport.remarks, tbviolationreport.evidence, tbviolationreport.status)
+    VALUES (p_SRCode, p_StaffID, p_ViolationTypeID, p_ViolationDate, p_ViolationTime, p_Remarks, p_Evidence, p_Status);
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentAppeal`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentAppeal` (IN `id` INT, IN `date` DATE, IN `message` VARCHAR(255))   INSERT INTO tbappeal (violationid, date, appeal)
+VALUES (id, date, message)$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentViolationCarousel`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentViolationCarousel` (IN `id` INT)   SELECT 
+	tbviolationreport.violationid,
+    tbviolationtypes.violationame,
+    tbviolationtypes.violationlevel,
+    tbviolationreport.violationdate,
+    tbviolationreport.violationtime,
+    tbviolationreport.remarks,
+    tbviolationreport.status,
+    tbviolationreport.evidence
+   
+FROM tbviolationreport
+INNER JOIN tbviolationtypes ON tbviolationreport.violationtypeid = tbviolationtypes.violationtypeid
+INNER JOIN tb_studinfo ON tbviolationreport.studid = tb_studinfo.studid
+
+WHERE tb_studinfo.studid = id$$
+
+DROP PROCEDURE IF EXISTS `SP_StudentViolationTypeCounter`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_StudentViolationTypeCounter` (IN `id` INT)   SELECT
+	SUM(CASE WHEN ViolationLevel = 'Minor' THEN 1 ELSE 0 END) AS MinorViolations,
+	SUM(CASE WHEN ViolationLevel = 'Major' THEN 1 ELSE 0 END) AS MajorViolations
+FROM
+	tbviolationtypes
+INNER JOIN tbviolationreport ON tbviolationtypes.violationtypeid = tbviolationreport.violationtypeid
+INNER JOIN tb_studinfo ON tbviolationreport.studid = tb_studinfo.studid
+
+WHERE
+	tb_studinfo.studid = id$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -42,12 +185,7 @@ CREATE TABLE IF NOT EXISTS `account_tbl` (
 --
 
 INSERT INTO `account_tbl` (`AdminId`, `empid`, `username`, `password`) VALUES
-(2, 1, 'nina', 'nina123'),
-(3, 2, 'patrick', 'patrick123'),
-(4, 3, 'kim', 'kim123'),
-(5, 4, 'matt', 'matt123'),
-(6, 5, 'cyrus', 'cyrus123'),
-(7, 6, 'jv', 'jv123');
+(2, 1, 'nina', 'nina123');
 
 -- --------------------------------------------------------
 
@@ -61,15 +199,41 @@ CREATE TABLE IF NOT EXISTS `addquantity` (
   `quantity` int DEFAULT NULL,
   `purchaseDate` datetime DEFAULT NULL,
   `equipmentCondition` varchar(255) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`equipmentId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `addquantity`
 --
 
-INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`) VALUES
-(1, 2, '2023-11-23 17:47:00', 'Like New');
+INSERT INTO `addquantity` (`equipmentId`, `quantity`, `purchaseDate`, `equipmentCondition`, `empid`) VALUES
+(3, 2, '2023-11-28 21:16:00', 'Poor', 3),
+(2, 3, '2023-11-28 21:15:00', 'Good', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `empid` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `adminid_g9` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `username`, `email`, `password`, `empid`) VALUES
+(1, 'admin', 'admin123@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 1);
 
 -- --------------------------------------------------------
 
@@ -87,8 +251,95 @@ CREATE TABLE IF NOT EXISTS `archived_equipment` (
   `quantity` int DEFAULT NULL,
   `description` text,
   `equipmentImage` varchar(255) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
+  `removalReason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`archivedId`)
-) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `archived_equipment`
+--
+
+INSERT INTO `archived_equipment` (`archivedId`, `equipmentId`, `archivedDate`, `equipmentName`, `brand`, `quantity`, `description`, `equipmentImage`, `empid`, `removalReason`) VALUES
+(48, 1, '2023-11-28 20:50:21', 'Soccer Ball', 'Brand A', 100, 'Description for Soccer Ball', '/SIA/images/soccer_ball.jpg', 2, 'Obsolete');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `books`
+--
+
+DROP TABLE IF EXISTS `books`;
+CREATE TABLE IF NOT EXISTS `books` (
+  `bookID` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `genre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ISBN` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `quantity` int NOT NULL,
+  `publication_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`bookID`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `books`
+--
+
+INSERT INTO `books` (`bookID`, `title`, `author`, `genre`, `ISBN`, `description`, `quantity`, `publication_date`) VALUES
+(4, 'Book 1', 'Author 1', 'Genre 1', 'ISBN10101', 'Description of Book 1', 10, '2023-01-15 00:00:00'),
+(5, 'Book 2', 'Author 2', 'Genre 2', 'ISBN99999', 'Description of Book 2', 15, '2023-02-20 00:00:00'),
+(6, 'Book 3', 'Author 3', 'Genre 3', 'ISBN88888', 'Description of Book 3', 8, '2023-03-25 00:00:00'),
+(7, 'Book 4', 'Author 1', 'Genre 4', 'ISBN77777', 'Description of Book 4', 20, '2023-04-10 00:00:00'),
+(8, 'Book 5', 'Author 1', 'Genre 1', 'ISBN66666', 'Description of Book 5', 0, '2023-05-05 00:00:00'),
+(9, 'Book 6', 'Author 1', 'Genre 1', 'ISBN55555', 'Description of Book 6', 15, '2023-06-15 00:00:00'),
+(10, 'Book 7', 'Author 2', 'Genre 2', 'ISBN44444', 'Description of Book 7', 12, '2023-07-20 00:00:00'),
+(11, 'Book 8', 'Author 2', 'Genre 2', 'ISBN33333', 'Description of Book 8', 18, '2023-08-25 00:00:00'),
+(12, 'Book 9', 'Author 2', 'Genre 2', 'ISBN022222', 'Description of Book 9', 25, '2023-09-10 00:00:00'),
+(13, 'Book 10', 'Author 3', 'Genre 3', 'ISBN11111', 'Description of Book 10', 0, '2022-10-05 00:00:00'),
+(14, 'Book 11', 'Author 3', 'Genre 4', 'ISBN12345', 'Description of Book 11', 8, '2023-11-15 00:00:00'),
+(15, 'Book 12', 'Author 4', 'Genre 5', 'ISBN67890', 'Description of Book 12', 15, '2023-12-20 00:00:00'),
+(16, 'Book 13', 'Author 4', 'Genre 5', 'ISBN13579', 'Description of Book 13', 20, '2023-01-25 00:00:00'),
+(17, 'Book 14', 'Author 5', 'Genre 6', 'ISBN24680', 'Description of Book 14', 10, '2023-02-10 00:00:00'),
+(18, 'Book 15', 'Author 6', 'Genre 7', 'ISBN98765', 'Description of Book 15', 0, '2023-03-05 00:00:00'),
+(19, 'Book 16', 'Author 6', 'Genre 7', 'ISBN11223', 'Description of Book 16', 18, '2023-04-15 00:00:00'),
+(20, 'Book 17', 'Author 7', 'Genre 8', 'ISBN44556', 'Description of Book 17', 12, '2023-05-20 00:00:00'),
+(21, 'Book 18', 'Author 7', 'Genre 8', 'ISBN77889', 'Description of Book 18', 22, '2023-06-25 00:00:00'),
+(22, 'Book 19', 'Author 8', 'Genre 9', 'ISBN99000', 'Description of Book 19', 0, '2023-07-10 00:00:00'),
+(23, 'Book 20', 'Author 8', 'Genre 9', 'ISBN11222', 'Description of Book 20', 30, '2023-08-05 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `book_transactions`
+--
+
+DROP TABLE IF EXISTS `book_transactions`;
+CREATE TABLE IF NOT EXISTS `book_transactions` (
+  `transactionID` int NOT NULL AUTO_INCREMENT,
+  `userID` int NOT NULL,
+  `bookID` int NOT NULL,
+  `inQuantity` int NOT NULL,
+  `outQuantity` int NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`transactionID`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `book_transactions`
+--
+
+INSERT INTO `book_transactions` (`transactionID`, `userID`, `bookID`, `inQuantity`, `outQuantity`, `date`) VALUES
+(3, 2, 6, 2, 0, '2023-11-19 09:20:17'),
+(4, 2, 7, 0, 1, '2023-11-19 09:20:23'),
+(5, 2, 8, 1, 0, '2023-11-20 09:20:29'),
+(6, 2, 9, 0, 3, '2023-11-20 04:20:00'),
+(7, 2, 10, 2, 0, '2023-11-21 06:05:00'),
+(8, 1, 11, 4, 0, '2023-11-21 03:14:51'),
+(9, 1, 12, 0, 5, '2023-11-23 03:20:58'),
+(10, 1, 13, 0, 5, '2023-11-23 04:53:56'),
+(11, 1, 14, 1, 0, '2023-11-24 05:08:34'),
+(12, 1, 15, 0, 1, '2023-11-25 05:08:45');
 
 -- --------------------------------------------------------
 
@@ -105,21 +356,20 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   `description` text,
   `locationId` int DEFAULT NULL,
   `equipmentImage` blob,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`equipmentId`),
   KEY `equipmentCategoryId` (`equipmentCategoryId`),
-  KEY `locationId` (`locationId`)
-) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `locationId` (`locationId`),
+  KEY `fk_empid` (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`) VALUES
-(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067),
-(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067),
-(3, 'Tennis Racket', 3, 'Brand C', 'Description for Tennis Racket', 3, 0x2f5349412f696d616765732f74656e6e69735f7261636b65742e6a7067),
-(4, 'Baseball Bat', 4, 'Brand D', 'Description for Baseball Bat', 4, 0x2f5349412f696d616765732f6261736562616c6c5f6261742e6a706567),
-(5, 'Volleyball', 5, 'Brand E', 'Description for Volleyball', 5, 0x2f5349412f696d616765732f766f6c6c657962616c6c2e6a706567);
+INSERT INTO `equipment` (`equipmentId`, `equipmentName`, `equipmentCategoryId`, `brand`, `description`, `locationId`, `equipmentImage`, `empid`) VALUES
+(1, 'Soccer Ball', 1, 'Brand A', 'Description for Soccer Ball', 1, 0x2f5349412f696d616765732f736f636365725f62616c6c2e6a7067, 1),
+(2, 'Basketball', 2, 'Brand B', 'Description for Basketball', 2, 0x2f5349412f696d616765732f6261736b657462616c6c2e6a7067, 2);
 
 -- --------------------------------------------------------
 
@@ -132,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `equipmentcategories` (
   `categoryId` int NOT NULL AUTO_INCREMENT,
   `categoryName` varchar(255) NOT NULL,
   PRIMARY KEY (`categoryId`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `equipmentcategories`
@@ -158,9 +408,17 @@ CREATE TABLE IF NOT EXISTS `equipmentremovalrequests` (
   `requestDate` datetime DEFAULT NULL,
   `removalReason` text,
   `quantityToRemove` int DEFAULT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`requestId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `equipmentremovalrequests`
+--
+
+INSERT INTO `equipmentremovalrequests` (`requestId`, `equipmentId`, `requestDate`, `removalReason`, `quantityToRemove`, `empid`) VALUES
+(34, 1, '2023-11-28 20:50:00', 'Obsolete', 100, 2);
 
 -- --------------------------------------------------------
 
@@ -174,20 +432,75 @@ CREATE TABLE IF NOT EXISTS `equipmentupdates` (
   `equipmentId` int NOT NULL,
   `updateDate` datetime DEFAULT NULL,
   `originalValue` text,
-  `valueToAdd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `valueToAdd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`updateId`),
   KEY `equipmentId` (`equipmentId`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `equipmentupdates`
+-- Table structure for table `instocks_details`
 --
 
-INSERT INTO `equipmentupdates` (`updateId`, `equipmentId`, `updateDate`, `originalValue`, `valueToAdd`) VALUES
-(1, 132, '2023-11-21 21:47:00', '13', '1'),
-(2, 132, '2023-11-21 21:48:00', '14', '1'),
-(3, 132, '2023-11-21 22:05:00', '15', '1'),
-(4, 134, '2023-11-23 09:19:00', '2', '3');
+DROP TABLE IF EXISTS `instocks_details`;
+CREATE TABLE IF NOT EXISTS `instocks_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `product_id` int NOT NULL,
+  `added_qnt` int DEFAULT NULL,
+  `received_date` date DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `instocks_details`
+--
+
+INSERT INTO `instocks_details` (`id`, `empid`, `product_id`, `added_qnt`, `received_date`) VALUES
+(1, 0, 3, 2, '2023-11-28'),
+(2, 0, 4, 5, '2023-11-28'),
+(3, 0, 5, 10, '2023-11-28');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `in_stocks`
+--
+
+DROP TABLE IF EXISTS `in_stocks`;
+CREATE TABLE IF NOT EXISTS `in_stocks` (
+  `product_id` int NOT NULL,
+  `stocks_qnt` int NOT NULL DEFAULT '0',
+  KEY `FK_Products_Stocks` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `in_stocks`
+--
+
+INSERT INTO `in_stocks` (`product_id`, `stocks_qnt`) VALUES
+(3, 750),
+(4, 182),
+(5, 10),
+(6, 25),
+(7, 90),
+(8, 100),
+(9, 40),
+(10, 55),
+(11, 75),
+(12, 25),
+(13, 60),
+(14, 85),
+(15, 95),
+(16, 105),
+(17, 45),
+(18, 60),
+(19, 0),
+(20, 0),
+(21, 0);
 
 -- --------------------------------------------------------
 
@@ -201,7 +514,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
   `locationName` varchar(255) NOT NULL,
   `locationDescription` text,
   PRIMARY KEY (`locationId`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `locations`
@@ -227,16 +540,348 @@ CREATE TABLE IF NOT EXISTS `login_logout_log` (
   `userRole` varchar(255) NOT NULL,
   `event_type` enum('login','logout') NOT NULL,
   `timestamp` datetime NOT NULL,
+  `empid` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=565 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=634 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `login_logout_log`
 --
 
-INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`) VALUES
-(564, 'kim', 'Admin', 'logout', '2023-11-26 22:59:45'),
-(563, 'kim', 'Visitor Management Admin', 'login', '2023-11-26 22:59:40');
+INSERT INTO `login_logout_log` (`id`, `username`, `userRole`, `event_type`, `timestamp`, `empid`) VALUES
+(633, 'remover', 'equipment remover', 'login', '2023-11-28 23:27:28', NULL),
+(632, 'admin', 'admin', 'logout', '2023-11-28 23:27:23', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `menu`
+--
+
+DROP TABLE IF EXISTS `menu`;
+CREATE TABLE IF NOT EXISTS `menu` (
+  `food_id` int NOT NULL AUTO_INCREMENT,
+  `available_menu` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `food_desc` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `price` decimal(4,2) DEFAULT NULL,
+  `image` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`food_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu`
+--
+
+INSERT INTO `menu` (`food_id`, `available_menu`, `food_desc`, `price`, `image`) VALUES
+(20, 'Pancit Guisado', 'Regular', '60.00', '64649f7f74d36.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_manager`
+--
+
+DROP TABLE IF EXISTS `order_manager`;
+CREATE TABLE IF NOT EXISTS `order_manager` (
+  `Order_Id` int NOT NULL AUTO_INCREMENT,
+  `Full_Name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `status` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`Order_Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_manager`
+--
+
+INSERT INTO `order_manager` (`Order_Id`, `Full_Name`, `status`) VALUES
+(7, 'new customer', 'Pending');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_table`
+--
+
+DROP TABLE IF EXISTS `order_table`;
+CREATE TABLE IF NOT EXISTS `order_table` (
+  `Order_Id` int NOT NULL,
+  `ordered_menu` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `price` int NOT NULL,
+  `quantity` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_table`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `outstocks_details`
+--
+
+DROP TABLE IF EXISTS `outstocks_details`;
+CREATE TABLE IF NOT EXISTS `outstocks_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `product_id` int NOT NULL,
+  `out_qnt` int DEFAULT NULL,
+  `received_date` date DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `outstocks_details`
+--
+
+INSERT INTO `outstocks_details` (`id`, `empid`, `product_id`, `out_qnt`, `received_date`) VALUES
+(4, 0, 3, 30, '2023-11-28'),
+(1, 0, 6, 5, '2023-11-28'),
+(2, 0, 8, 10, '2023-11-28'),
+(3, 0, 13, 5, '2023-11-28');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE IF NOT EXISTS `products` (
+  `product_id` int NOT NULL,
+  `product_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `price` decimal(10,2) NOT NULL,
+  `image` mediumblob,
+  KEY `idx_product_id` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `image`) VALUES
+(3, 'Product C', 'Description for Product Caaaaaaaaaaaaaaaat', '30.00', NULL),
+(4, 'Product D', 'Description for Product D', '35.00', NULL),
+(5, 'Product E', 'Description for Product E', '40.00', NULL),
+(6, 'Product F', 'Description for Product F', '45.00', NULL),
+(7, 'Product G', 'Description for Product G', '50.00', NULL),
+(8, 'Product H', 'Description for Product H', '55.00', NULL),
+(9, 'Product I', 'Description for Product I', '60.00', NULL),
+(10, 'Product J', 'Description for Product J', '65.00', NULL),
+(11, 'Product K', 'Description for Product K', '70.00', NULL),
+(12, 'Product L', 'Description for Product L', '75.00', NULL),
+(13, 'Product M', 'Description for Product M', '80.00', NULL),
+(14, 'Product N', 'Description for Product N', '85.00', NULL),
+(15, 'Product O', 'Description for Product O', '90.00', NULL),
+(16, 'Product P', 'Description for Product P', '95.00', NULL),
+(17, 'Product Q', 'Description for Product Q', '100.00', NULL),
+(18, 'Product R', 'Description for Product R', '105.00', NULL),
+(19, 'GGs', 'GGs', '123.00', NULL),
+(20, 'GGG', 'GGG', '123.00', NULL),
+(21, 'GGG', 'GG', '3.00', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rgouser`
+--
+
+DROP TABLE IF EXISTS `rgouser`;
+CREATE TABLE IF NOT EXISTS `rgouser` (
+  `id` int NOT NULL,
+  `empid` int NOT NULL,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` enum('admin','employee','client','') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `rgouser`
+--
+
+INSERT INTO `rgouser` (`id`, `empid`, `username`, `password`, `role`) VALUES
+(1, 1, 'admin', 'admRGO', 'admin'),
+(2, 2, 'employee', 'empRGO', 'employee'),
+(3, 0, 'client', 'RGO', 'client');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbaccount`
+--
+
+DROP TABLE IF EXISTS `tbaccount`;
+CREATE TABLE IF NOT EXISTS `tbaccount` (
+  `accid` int NOT NULL AUTO_INCREMENT,
+  `empid` int DEFAULT NULL,
+  `passwordencrypted` varchar(255) NOT NULL,
+  PRIMARY KEY (`accid`),
+  KEY `empid` (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbaccount`
+--
+
+INSERT INTO `tbaccount` (`accid`, `empid`, `passwordencrypted`) VALUES
+(1, NULL, 'password1'),
+(2, NULL, 'password2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbadminaccount`
+--
+
+DROP TABLE IF EXISTS `tbadminaccount`;
+CREATE TABLE IF NOT EXISTS `tbadminaccount` (
+  `adminid` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `passwordencrypted` varchar(255) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  PRIMARY KEY (`adminid`),
+  KEY `empid_fk_adminaccount` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbadminaccount`
+--
+
+INSERT INTO `tbadminaccount` (`adminid`, `empid`, `passwordencrypted`, `username`) VALUES
+(1, 1, '$2y$10$n0pZWJxXGQUkTZpOevB5/u48DIBglIqgp3zJk7CREuGtZ7fyjS3MO', 'aguila');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbadminfo`
+--
+
+DROP TABLE IF EXISTS `tbadminfo`;
+CREATE TABLE IF NOT EXISTS `tbadminfo` (
+  `admid` int NOT NULL AUTO_INCREMENT,
+  `firstname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lastname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`admid`)
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbadminfo`
+--
+
+INSERT INTO `tbadminfo` (`admid`, `firstname`, `lastname`, `password`) VALUES
+(11, 'Queenie', 'Manigbas', 'mina97'),
+(12, 'Maria', 'De Leon', 'ganda34');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbappeal`
+--
+
+DROP TABLE IF EXISTS `tbappeal`;
+CREATE TABLE IF NOT EXISTS `tbappeal` (
+  `appealid` int NOT NULL AUTO_INCREMENT,
+  `violationid` int NOT NULL,
+  `date` date NOT NULL,
+  `appeal` varchar(255) NOT NULL,
+  PRIMARY KEY (`appealid`),
+  KEY `violationid_fk_appeal` (`violationid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbappstatus`
+--
+
+DROP TABLE IF EXISTS `tbappstatus`;
+CREATE TABLE IF NOT EXISTS `tbappstatus` (
+  `statusid` varchar(10) NOT NULL,
+  `statusname` varchar(200) NOT NULL,
+  PRIMARY KEY (`statusname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbappstatus`
+--
+
+INSERT INTO `tbappstatus` (`statusid`, `statusname`) VALUES
+('SI0004', 'Congratulions! You are hired. We are looking forward to work with you!'),
+('SI0005', 'Sorry, your application was rejected.'),
+('SI0003', 'We are pleased to inform you that you have been selected as one of the candidates for a FACE-TO-FACE INTERVIEW.'),
+('SI0001', 'We have successfully RECEIVED your application.'),
+('SI0002', 'Your application is UNDER REVIEW. Please wait for the next update.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbattendance`
+--
+
+DROP TABLE IF EXISTS `tbattendance`;
+CREATE TABLE IF NOT EXISTS `tbattendance` (
+  `attendanceid` int NOT NULL,
+  `studid` varchar(10) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
+  `subjectid` int DEFAULT NULL,
+  `facilityid` varchar(10) DEFAULT NULL,
+  `seatnumber` int NOT NULL,
+  `timein` datetime DEFAULT NULL,
+  `timeout` datetime DEFAULT NULL,
+  PRIMARY KEY (`attendanceid`),
+  KEY `studid` (`studid`),
+  KEY `empid` (`empid`),
+  KEY `subjectid` (`subjectid`),
+  KEY `facilityid` (`facilityid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbattendance`
+--
+
+INSERT INTO `tbattendance` (`attendanceid`, `studid`, `empid`, `subjectid`, `facilityid`, `seatnumber`, `timein`, `timeout`) VALUES
+(0, NULL, NULL, NULL, NULL, 0, '2023-11-28 14:08:18', '2023-11-28 14:08:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbdepartment`
+--
+
+DROP TABLE IF EXISTS `tbdepartment`;
+CREATE TABLE IF NOT EXISTS `tbdepartment` (
+  `deptid` varchar(10) NOT NULL,
+  `deptname` varchar(50) NOT NULL,
+  PRIMARY KEY (`deptname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbdepartment`
+--
+
+INSERT INTO `tbdepartment` (`deptid`, `deptname`) VALUES
+('DI0010', 'Accounting Office'),
+('DI0003', 'College of Accountancy, Business and Economics'),
+('DI0009', 'College of Agriculture and Forestry'),
+('DI0001', 'College of Arts and Sciences'),
+('DI0005', 'College of Engineering, Architecture and Fine Arts'),
+('DI0008', 'College of Industrial Technology'),
+('DI0002', 'College of Informatics and Computing Sciences'),
+('DI0006', 'College of Nursing'),
+('DI0007', 'College of Nutrition and Dietetics'),
+('DI0004', 'College of Teacher Education'),
+('DI0016', 'External Affairs Office'),
+('DI0018', 'Health Services'),
+('DI0015', 'Human Resource Management Office'),
+('DI0017', 'ICT Services'),
+('DI0011', 'Library Services'),
+('DI0014', 'Office of the Guidance and Counseling'),
+('DI0012', 'Registrar Office'),
+('DI0013', 'Testing and Admission Office');
 
 -- --------------------------------------------------------
 
@@ -251,21 +896,575 @@ CREATE TABLE IF NOT EXISTS `tbempinfo` (
   `firstname` varchar(25) NOT NULL,
   `department` varchar(30) NOT NULL,
   PRIMARY KEY (`empid`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbempinfo`
 --
 
 INSERT INTO `tbempinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
-(1, 'aguila', 'nina', 'cics'),
-(2, 'Latade', 'Patrick Jacob', 'Security'),
-(3, 'Cuenca', 'Kim Paolo', 'Security'),
-(4, 'Evangilista', 'Matt', 'Security'),
-(5, 'Tapalla', 'Cyrus', 'Security'),
-(6, 'Mamiit', 'JV', 'Security'),
-(7, 'Valencia', 'Dexter', 'Cashier'),
-(8, 'Hernandez', 'Mark Jelo', 'Registration');
+(1, 'aguila', 'nina', 'cics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbfacility`
+--
+
+DROP TABLE IF EXISTS `tbfacility`;
+CREATE TABLE IF NOT EXISTS `tbfacility` (
+  `facilityid` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `buildingname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roomnumber` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`facilityid`)
+) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbfacility`
+--
+
+INSERT INTO `tbfacility` (`facilityid`, `buildingname`, `roomnumber`) VALUES
+('CC1001', 'CECS', 'Comlab 1'),
+('HC2001', 'HEB', 'Comlab 2'),
+('HC1001', 'HEB', 'Comlab 1'),
+('CC2001', 'CECS', 'Comlab 2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbhrstaff`
+--
+
+DROP TABLE IF EXISTS `tbhrstaff`;
+CREATE TABLE IF NOT EXISTS `tbhrstaff` (
+  `hrid` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(20) NOT NULL,
+  PRIMARY KEY (`hrid`),
+  KEY `empid_fk_adminaccount` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbhrstaff`
+--
+
+INSERT INTO `tbhrstaff` (`hrid`, `empid`, `password`, `username`) VALUES
+(1, 1, 'admin1234', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbjobapplication`
+--
+
+DROP TABLE IF EXISTS `tbjobapplication`;
+CREATE TABLE IF NOT EXISTS `tbjobapplication` (
+  `appno` varchar(15) NOT NULL,
+  `jobtitle` varchar(255) NOT NULL,
+  `fname` varchar(255) NOT NULL,
+  `mname` varchar(255) NOT NULL,
+  `lname` varchar(255) NOT NULL,
+  `birthday` date NOT NULL,
+  `gender` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contactno` varchar(12) NOT NULL,
+  `emailadd` varchar(255) NOT NULL,
+  `appadd` varchar(255) NOT NULL,
+  `appeducation` varchar(255) NOT NULL,
+  `appeligibility` text NOT NULL,
+  `appworkexp` text NOT NULL,
+  `fileresume` varchar(90) NOT NULL,
+  `fileletter` varchar(90) NOT NULL,
+  `filediploma` varchar(90) NOT NULL,
+  `filecert` varchar(90) NOT NULL,
+  `appdate` date NOT NULL,
+  `appstatus` varchar(200) DEFAULT NULL,
+  `statusdate` date DEFAULT NULL,
+  PRIMARY KEY (`appno`),
+  KEY `title` (`jobtitle`),
+  KEY `status` (`appstatus`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbjobapplication`
+--
+
+INSERT INTO `tbjobapplication` (`appno`, `jobtitle`, `fname`, `mname`, `lname`, `birthday`, `gender`, `contactno`, `emailadd`, `appadd`, `appeducation`, `appeligibility`, `appworkexp`, `fileresume`, `fileletter`, `filediploma`, `filecert`, `appdate`, `appstatus`, `statusdate`) VALUES
+('CV20232300', 'IT Lecturer', 'Carla Eliza', 'Magcawas', 'Villanueva', '2003-06-29', 'Female', '0987654321', 'carlaeliza@gmail.com', 'Sabang', 'College', 'None Required', 'Virtual Assistant', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', 'attachments/Activity-4_UI.pdf', '2023-11-19', 'Your application is UNDER REVIEW. Please wait for the next update.', '2023-11-20'),
+('KA20239178', 'Medical Services Assistant', 'Kate', 'Rosal', 'Atienza', '2003-09-04', 'Female', '09655820186', 'karatienza@gmail.com', 'lumbang', 'College', 'BSIT', 'lazada', 'attachments/1x1 and posters.pdf', 'attachments/id sy 2023-2024.pdf', 'attachments/Kate_2ndyr_2ndsem-grades.pdf', 'attachments/Kate_3rd year_COR.pdf', '2023-11-13', 'We are pleased to inform you that you have been selected as one of the candidates for a FACE-TO-FACE INTERVIEW.', '2023-11-20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbjobs`
+--
+
+DROP TABLE IF EXISTS `tbjobs`;
+CREATE TABLE IF NOT EXISTS `tbjobs` (
+  `jobid` varchar(255) NOT NULL,
+  `jobtitle` varchar(255) NOT NULL,
+  `departmentname` varchar(50) NOT NULL,
+  `quantity` int NOT NULL,
+  `dateposted` date NOT NULL,
+  `education` varchar(255) DEFAULT NULL,
+  `experience` text NOT NULL,
+  `expertise` text NOT NULL,
+  `competency` text NOT NULL,
+  `eligibility` text NOT NULL,
+  `dutres` text,
+  `hiringstatus` enum('Full','Active') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
+  PRIMARY KEY (`jobtitle`),
+  KEY `Jobs` (`departmentname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbjobs`
+--
+
+INSERT INTO `tbjobs` (`jobid`, `jobtitle`, `departmentname`, `quantity`, `dateposted`, `education`, `experience`, `expertise`, `competency`, `eligibility`, `dutres`, `hiringstatus`) VALUES
+('JI0001', 'Guidance Counselor III', 'Office of the Guidance and Counseling', 3, '2023-08-27', 'Graduate of Master in Guidance and Counseling', 'At least 1-year relevant experience', 'Counseling Skills; Intervention Planning and Development Skills; Stress Management Skills; Psychological Report Writing; Group and Activity Facilitation; Problem Solving and Decision Making; Communication Skills; Interpersonal Skills; Technology Skills; Professional Integrity; and Records and Data Management', 'Counseling Skills; Intervention Planning and Development Skills; Stress Management Skills; Psychological Report Writing; Group and Activity Facilitation; Problem Solving and Decision Making; Communication Skills; Interpersonal Skills; Technology Skills; Professional Integrity; and Records and Data Management', 'Registered Guidance Counselor', 'true', 'Full'),
+('JI0002', 'IT Lecturer', 'College of Informatics and Computing Sciences', 5, '2023-02-22', 'Candidates should have at least master’s degree and/or units and possess an undergraduate degree in IT/CS or any allied field', 'With at least experience in working IT industry, or handles project related to IT', 'Possesses competent knowledge in the field of IT/CS, can handle system administration and maintenance and system integration and Object-Oriented Programming', 'Possesses competent knowledge in the field of IT/CS, can handle system administration and maintenance and system integration and Object-Oriented Programming', 'None Required', 'True', 'Active'),
+('JI0009', 'Librarian', 'Library Services', 1, '2023-11-19', 'Librarian', 'At least 1-year relevant experience', 'Librarian', 'Librarian', 'None Required', 'true', 'Active'),
+('JI0004', 'Management Accounting Lecturer', 'College of Accountancy, Business and Economics', 1, '2023-06-29', 'Bachelor of Science in Management Accounting with knowledge in Business Analytics', 'At least one (1) year experience in the Academe or in the industry', 'Business Analytics', 'Business Analytics', 'None Required', 'True', 'Active'),
+('JI0003', 'Medical Services Assistant', 'Health Services', 2, '2023-09-04', 'Graduate of Bachelor of Science in Nursing (BSN)', 'Two (2) years of relevant experience', 'With Basic Life Support(BLS) / Advance Cardiovascular Life Support(ACLS) Training', 'With Basic Life Support(BLS) / Advance Cardiovascular Life Support(ACLS) Training', 'None Required', 'True', 'Active'),
+('JI0005', 'Psychology Instructor', 'College of Arts and Sciences', 3, '2023-01-30', 'Bachelor of Science in Psychology or other related Bachelor’s Degree with Relevant Master’s Degree', 'None Required', 'Proficient in the field of Psycholgy; possess critical thinking skills, communication skills and interpersonal skills', 'Proficient in the field of Psycholgy; possess critical thinking skills, communication skills and interpersonal skills', 'RA 1080', 'Terms and conditions of employment will be discussed during interview', 'Active'),
+('JI0008', 'School Dentist', 'Health Services', 1, '2023-11-19', 'Graduate of BS Dentistry', 'At least 1-year relevant experience', 'Dentistry', 'Dentistry', 'None Required', 'false', 'Full'),
+('JI0006', 'Social Science Lecturers', 'College of Teacher Education', 3, '2023-01-01', 'Bachelor of Arts in Social Science or any related Bachelor\'s Degree with relevant Master\'s Degree', 'Two (2) years of relevant experience', 'None Required', 'Possess competent knowledge in the field of Social Science; good at communication, listening, collaboration, and adaptability', 'None Required', 'Terms and conditions of employment will be discussed during interview', 'Active'),
+('JI0007', 'System Admin', 'ICT Services', 2, '2023-11-19', 'Graduate of Bachelor of Science in Information Technology or Computer Science', 'With at least experience in working IT industry, or handles project related to IT', 'IT', 'IT', 'None Required', 'true', 'Active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblstudentqrcode`
+--
+
+DROP TABLE IF EXISTS `tblstudentqrcode`;
+CREATE TABLE IF NOT EXISTS `tblstudentqrcode` (
+  `studid` varchar(10) NOT NULL,
+  `qrcode_img` blob,
+  PRIMARY KEY (`studid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tblstudentqrcode`
+--
+
+INSERT INTO `tblstudentqrcode` (`studid`, `qrcode_img`) VALUES
+('21-33827', 0x89504e470d0a1a0a0000000d494844520000006f0000006f0103000000d80b0c2300000006504c5445ffffff00000055c2d37e000000097048597300000ec400000ec401952b0e1b0000011e49444154388dd5d431ae84201006e0df50d8c90548b8061d57d20bb87a01bd121dd720e1026b47419c37abfb2c817689cd4722cc8c3302bfb824d19ec2e42251a87280d8937e9bb8a081366e56ef89379bb87b35223672413321b63e4b124f900572be9b89fc3ce917c8ab736146788a59a074b4f49112a6fba822bb0499f2e4684d0df4f1ecf5e1f38b1a4819567189a881b082935d2ca6842a3b9f3b9747d0fabdb7481247c26cf491ea44af66a897cf638f2abba44f0eccc6e35bc912a553a3c9e0a87c9d30745a4d8e4f4003b95bc4ea14ee062852262eb8de89ee77cbbc02cb3061307572c72e96c8c5ad0f557e66c1f2756168e135bfc77f54552ec8134f996923d7c763b4a1ce2baad18af7f5f5cbfcfccd48af9f29aef3f7d61ff04ff7476cd985680000000049454e44ae426082),
+('21-38479', 0x89504e470d0a1a0a0000000d494844520000006f0000006f0103000000d80b0c2300000006504c5445ffffff00000055c2d37e000000097048597300000ec400000ec401952b0e1b0000011f49444154388dd5d3b18dc5200c0050471474b00052d670c74ac90249582059898e3590bc40aea340f1917f97fbba2281f62384f40a641b63804f5c9a7995b405628e552a108ba4ddd2020db4e47c1e90b6d4c4c58a2d8966c62e51134b5696ff2579cfb35ea4b2dfe5dff3759d4bacbfc77ca00ee492d1e90af448b079f4719219640391be021d368e1eea9471f6a030ab9f408fd4dc3b16cca6e3161a00de815da813807680097f1bfa4c1de2c8a5ad7942a8b2f3fd61cb2ee162959a417b5ead192434909de703fb2d34b064e5f304c2710b694718998feb333cf0fc57362a1975aaf3cc2a9537a77792f72cb3e0bc5118d5351a4fb4b44ab1db527213b7100729168416ba94672f368e758258d10c584ea8f29cdfd27dcc33d7f979eb1b6bf5f813378728c60000000049454e44ae426082),
+('21-35608', 0x89504e470d0a1a0a0000000d494844520000006f0000006f0103000000d80b0c2300000006504c5445ffffff00000055c2d37e000000097048597300000ec400000ec401952b0e1b0000012549444154388dd5d3b1adc3201006e0b328e8600124af41c74af10289bd80bd121d6b20b180dd5120ffefe24479af79401b8490be027177dc117de3d2c02ccb23242036a948cc34ce96cf0ebab4f8482e6db98bab13c8a29736f1435de4a8649cf027c8ffc9f9f25dde9ff42be435f8a8ec6f312bd47e3c829972d4be4db2856c3a6551b287802f1af4086d6a6f14a50534e40e8611101bccf04abf4ab271f2d8e5c8f56c5239ae64bcdba2ae18ebd43e72fcca72abb4496edcad9980fdfad03a7528374abb33247bc8b3204e89e355c92a953337bee8e82e3bc84d45e691f9a7da7cbe05fefaa8aff6ae933b760bdcde3c3ed424cfc2e681fc6eda06797e217687d3c61ecebc651c3cf570414218df51d5496295e20862b56d3ef3cd5cc9a2439bdfb77e0026d3df321252fa430000000049454e44ae426082),
+('21-35459', 0x89504e470d0a1a0a0000000d494844520000006f0000006f0103000000d80b0c2300000006504c5445ffffff00000055c2d37e000000097048597300000ec400000ec401952b0e1b0000011249444154388dd5d3b10d84300c0550a314e992059058235d560a0b405800564a97352c65812b539cf09914e89ac3692fa2e015087f3b06f8c76389b6a42228221469401d1987542274d0978d46e3ca51bb78e471f1bd8cae44adba086a77d3cbabbbc80772dedd157eeef80f6ca79cfebb9d3f69a950c5b5bee72c133cccdc76aecaa1486e38652e8c8ef6adc4712608006b17cb96afd42fddc10a6be599aa23a1489ba7b305592b881c0803f0bd1a878c226dbb7e5727934cc349eb14af1975d013655c34bff41082e766b62032d5e9913b4949664b411ba1d132f92bde8295caee65f22e6c9577074d0f791913067f172992a2e619757177c803ba7ff444de5f8dc1bd8d469157de0c8b1b6d0691ff773e4d32de369616de5e0000000049454e44ae426082),
+('21-34693', 0x89504e470d0a1a0a0000000d494844520000006f0000006f0103000000d80b0c2300000006504c5445ffffff00000055c2d37e000000097048597300000ec400000ec401952b0e1b0000011b49444154388dd5d3b1adc4200c0660471474648148ac41c74ac902776481b0923bd64062814b97223a3f73772f7acd03b78792e24342f16f1c806f5c23d18a2a684594bb34a062ca03a90002fa12e05cb0c443c4487939a40c0037ad447c5535bbf2b7c8ffc8793757f8b9e237c86b40f5d0f96a66832315c27c3fce2509887003fbd46a7d7fb74db2c1e7d94fe0a1cb01f908c5c36e027273d6da737ae83ec1f17b8e8937739703da9db8aaab512d8e298f486b2a9fbc4d1ab03b8271d30c02baf34e65d3bf13dba1da53a9c7bd84e7705070d33b42879e875005474f015f914fa3b3f17dd689f5aa0ead80f542d16e2e1b2da0e71fa1a620143162be39be2619896b539faada04aedf6e7ae2c85dd6bc307155314197dfb77e00622fcc48e05c6e0f0000000049454e44ae426082);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_student`
+--
+
+DROP TABLE IF EXISTS `tbl_student`;
+CREATE TABLE IF NOT EXISTS `tbl_student` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `studid` int NOT NULL,
+  `SrCode` varchar(20) NOT NULL,
+  `StudentAddress` varchar(100) NOT NULL,
+  `StudentContactNo` varchar(100) NOT NULL,
+  `StudentDepartment` varchar(100) NOT NULL,
+  `QrCode` blob NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `SrCode` (`SrCode`),
+  KEY `studid` (`studid`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbl_student`
+--
+
+INSERT INTO `tbl_student` (`ID`, `studid`, `SrCode`, `StudentAddress`, `StudentContactNo`, `StudentDepartment`, `QrCode`) VALUES
+(1, 1, '20-11111', 'Lipa City', '09123435671', 'CICS', 0x89504e470d0a1a0a0000000d49484452000003e8000003e808060000004da3d4e4000000097048597300000ec300000ec301c76fa8640000001974455874536f667477617265007777772e696e6b73636170652e6f72679bee3c1a00001a4b49444154789cedd9d1adc4380e00c1d3c1f9a7cc4d609f3fd618b0c753150121c9321a3a3333ff0300000056fd7f7b0000000040a00300004082400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b607f876e79ced1180979a99ed11f8a0faffc3f97bb7faf903be97ffc7335ed00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b607e0b366667b04c83ae76c8ff0d5eaeb57bfffeaf3c126df07fcadfeffe5192fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb03f0dbce39db23f04133b33d021f647fd954ff7ff83edead7efe78c6f7cb262fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb0300f09dce39db23f04133b33d0200fc1c2fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb0300c027ccccf6085fed9cb33dc22dfb0bc01b79410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e0da1e80df3633db2300ff51fdfb3de76c8f70abbe7e75f6974df617f8142fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb03f059e79ced118097aadf2f33b33dc22debf74c7dfd78c6fe02bfca0b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f600df6e66b64700e05f9c73b647b8e5ffc126e70fa0c90b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f6007cd639677b845b33b33dc2adfafaf16ef5ef8367dc2fef667f9fa9df7ff6f719fbfb4c7dfd78c60b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f6007cd6cc6c8f70eb9cb33dc2adfafa01dfcbfdf28cffc733f5f5834df5ef9777f3820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53dc0b73be76c8ff0d566667b845bf5fdadaf5f9dfd7da63e5f7d7f79c6f903e08dbca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706666b687f866e79ced116ed9de77ab9fbf3adfc733f5f357df5feb07fcaafafd57e77e7e372fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb037cbb99d91ee1d639677b845bd6ef99fafad5d5f7b7ae7efeeafb5b5fbf3afbfb8cf57b37fbfb6ef6f7ddbca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706d0fc067cdccf6085fcdfabd9bfd7de69cb33dc22dfb0b7ff37dc0dfeaff37decd0b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f600dfee9cb33d02f05233b33dc2adfa7ceee77773fee06fbe8f77abef2fcf78410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e0da1e80cf9a99ed1120eb9cb33dc257abaf9ffb0ffee6fb78a67efff14cfdfba89fbffafad579410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e0da1e80df76ced91e810f9a99ed11f861ee9777abdf2ff5f97c1fcfd8df77b37e6cf2820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d0000fca299d91ee1d639677b845bf5f9eafb5b9fafbebf3c533f7fb0c90b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f600007ca799d91ee1ab9d73b647b8657fdfcdf97bc6fabd5b7d7feb9cbf67bca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706d0fc06f9b99ed1180ffe89cb33dc22df70b9beadf475d7dfddc2f6c72fedecd0b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f6007cd639677b04e0a566667b043ea8feffa89fbffa7c75f5f3579faf7efeeaeb079bbca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706666b687000000805fe7051d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040804007000080807f0059be1ed2ed463cb30000000049454e44ae426082),
+(2, 2, '20-12111', 'Marawoy, Lipa City', '0934657831', 'CICS', 0x89504e470d0a1a0a0000000d49484452000003e8000003e808060000004da3d4e4000000097048597300000ec300000ec301c76fa8640000001974455874536f667477617265007777772e696e6b73636170652e6f72679bee3c1a00001a2e49444154789cedd9db8dc346100041afc1fc531e4770fa38429e26af2a82c13e2835f6ccccfc03000000acfa777b0000000040a00300004082400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b60778ba73cef608c04bcdccf6087c51fdf7a37efeacdf3df5f5039eabfefdabf3820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d00df3533db2340d639677b8447b37eef56df5fbf6fef667fe167f5ef33f778410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e0da1e80bfed9cb33d025f3433db23f045f6f7ddeadfe7fa7ceec7bbd5cf1ff7b8bf6cf2820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d0000cf74ced91e0100e055bca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706d0f0000df3033db237c74ced91ee123eb0700ff3f2fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb03f0b7cdccf608c02fb9bff7583f782ef717f8162fe80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a000000045cdb03f05de79ced118097aa7f5f66667b848fac1ffcac7e3f00bec50b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f6004f3733db2300f040f5df8f73cef6081fd5d7afcefa013479410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e0da1e80ef3ae76c8ff0d1cc6c8ff0517dfd78b7fafde09efaf7c5f9bba7bebf75f5f3677fefb1bff7d4d78f7bbca00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e800000010706d0f00b06566b647e00fab9fbf73cef6088f667fe1b9eaf79777f3820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d00df3533db237c74ced91ee123ebf76ed6ef1ef7037ee6fc01f01b5ed00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b60778ba73cef6088f3633db237c54df5feb778ff57bb7fafed6d5cf9ffd6593f3774ffdfb52e7fcbd9b17740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002ceccccf6105075ced91ee1d1ea9f17fbfb6ece1f9b9cbf7beaeb57677fdfcdfebe9b17740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002aeed01a06c66b647e08becef3de79ced11f8a2fafd70feeea9ef2f6cf27d619317740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002aeed019eee9cb33d02f05233b33dc247f5f9eadf67eb778ff5839fb91fef56df5feef1820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d00df3533db2340d639677b8447b37ef05cfe1fdce3fbf76ef5fb513f7ff5f5abf3820e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a003000040c0b53d007fdb39677b04be6866b647802cdfbf7beaeb57fffed5d7afaebebfdce37eb0c90b3a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001d7f60000f017cdccf6081f9d73b647e08b9c3ff859fd7ef06e5ed00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b60700e09966667b84473be76c8ff091fd7d37e7ef9efafad5d9df77abef6f9d17740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002aeed01f8db66667b04e097ce39db234096fb714f7dfdeaff5feaebc73df5f3c73d5ed00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a00000004087400000008b8b607e0bbce39db23002f3533db237c54fffe59bf7beaeb579fafae7efeeaf3d5cf5f7dfd609317740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002ceccccf610000000f0d779410700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d00100002040a00300004080400700008000810e00000001021d00000002043a0000000408740000000810e80000001020d001000020e03fe7d709ed1d89e4740000000049454e44ae426082);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_studentlogs`
+--
+
+DROP TABLE IF EXISTS `tbl_studentlogs`;
+CREATE TABLE IF NOT EXISTS `tbl_studentlogs` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `SrCode` varchar(20) NOT NULL,
+  `LogDate` varchar(100) NOT NULL,
+  `TimeIn` varchar(100) NOT NULL,
+  `TimeOut` varchar(100) NOT NULL,
+  `inStatus` varchar(20) NOT NULL,
+  `outStatus` varchar(20) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `SrCode` (`SrCode`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_useradmin`
+--
+
+DROP TABLE IF EXISTS `tbl_useradmin`;
+CREATE TABLE IF NOT EXISTS `tbl_useradmin` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `Username` varchar(100) NOT NULL,
+  `Password` varchar(100) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbl_useradmin`
+--
+
+INSERT INTO `tbl_useradmin` (`ID`, `Username`, `Password`) VALUES
+(1, 'ninaaguila', 'nina123'),
+(2, 'mateoduke', 'matt123'),
+(3, 'jhonzalan', 'athan123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_visitor`
+--
+
+DROP TABLE IF EXISTS `tbl_visitor`;
+CREATE TABLE IF NOT EXISTS `tbl_visitor` (
+  `VisitorID` int NOT NULL AUTO_INCREMENT,
+  `VisitorName` varchar(100) NOT NULL,
+  `VisitorAddress` varchar(100) NOT NULL,
+  `VisitorContactNo` varchar(100) NOT NULL,
+  `VisitorSchool` varchar(100) NOT NULL,
+  `VisitorQrCode` blob NOT NULL,
+  PRIMARY KEY (`VisitorID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbl_visitor`
+--
+
+INSERT INTO `tbl_visitor` (`VisitorID`, `VisitorName`, `VisitorAddress`, `VisitorContactNo`, `VisitorSchool`, `VisitorQrCode`) VALUES
+(1, 'Otis Milburn', 'Balagtas, Batangas', '09123563278', 'Batangas State University Alangilan', 0x7172696d6167652e6a7067),
+(2, 'Maeve Wiley', 'Lodlod, Lipa City', '09325468793', 'STI Lipa', 0x7172696d6167652e6a7067);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_visitorlogs`
+--
+
+DROP TABLE IF EXISTS `tbl_visitorlogs`;
+CREATE TABLE IF NOT EXISTS `tbl_visitorlogs` (
+  `visitorLogsId` int NOT NULL AUTO_INCREMENT,
+  `VisitorName` varchar(100) NOT NULL,
+  `LogDate` varchar(100) NOT NULL,
+  `TimeIn` varchar(100) NOT NULL,
+  `TimeOut` varchar(100) NOT NULL,
+  `inStatus` varchar(20) NOT NULL,
+  `outStatus` varchar(20) NOT NULL,
+  PRIMARY KEY (`visitorLogsId`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbl_visitorlogs`
+--
+
+INSERT INTO `tbl_visitorlogs` (`visitorLogsId`, `VisitorName`, `LogDate`, `TimeIn`, `TimeOut`, `inStatus`, `outStatus`) VALUES
+(1, 'Maeve Wiley', '19-November-2023 Sunday', '11:08:04 AM', '11:08:22 AM', 'TIME IN', 'TIME OUT'),
+(2, 'Otis Milburn', '20-November-2023 Monday', '12:34:16 AM', '12:34:23 AM', 'TIME IN', 'TIME OUT'),
+(3, 'Waley Bayola', '20-November-2023 Monday', '12:34:52 AM', '12:34:59 AM', 'TIME IN', 'TIME OUT'),
+(4, 'Maeve Wiley', '20-November-2023 Monday', '12:51:00 AM', '12:51:09 AM', 'TIME IN', 'TIME OUT');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbstuddepartment`
+--
+
+DROP TABLE IF EXISTS `tbstuddepartment`;
+CREATE TABLE IF NOT EXISTS `tbstuddepartment` (
+  `studid` varchar(20) NOT NULL,
+  `deptid` int NOT NULL,
+  PRIMARY KEY (`studid`,`deptid`),
+  KEY `deptid` (`deptid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbstuddepartment`
+--
+
+INSERT INTO `tbstuddepartment` (`studid`, `deptid`) VALUES
+('21-33827', 101),
+('21-34693', 102),
+('21-35459', 102),
+('21-35608', 101),
+('21-38479', 103);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbstudentaccount`
+--
+
+DROP TABLE IF EXISTS `tbstudentaccount`;
+CREATE TABLE IF NOT EXISTS `tbstudentaccount` (
+  `userid` int NOT NULL AUTO_INCREMENT,
+  `studid` int NOT NULL,
+  `passwordencrypted` varchar(255) NOT NULL,
+  PRIMARY KEY (`userid`),
+  KEY `studid_fk_studentaccount` (`studid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbstudentaccount`
+--
+
+INSERT INTO `tbstudentaccount` (`userid`, `studid`, `passwordencrypted`) VALUES
+(1, 1, '$2y$10$n0pZWJxXGQUkTZpOevB5/u48DIBglIqgp3zJk7CREuGtZ7fyjS3MO'),
+(2, 2, '$2y$10$n0pZWJxXGQUkTZpOevB5/u48DIBglIqgp3zJk7CREuGtZ7fyjS3MO');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbstudentdepartment`
+--
+
+DROP TABLE IF EXISTS `tbstudentdepartment`;
+CREATE TABLE IF NOT EXISTS `tbstudentdepartment` (
+  `course` varchar(255) NOT NULL,
+  `department` varchar(100) NOT NULL,
+  PRIMARY KEY (`course`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbstudentdepartment`
+--
+
+INSERT INTO `tbstudentdepartment` (`course`, `department`) VALUES
+('BA Communication', 'College of Arts and Sciences'),
+('BS Computer Science', 'College of Informatics and Computing Sciences'),
+('BS Information Techonlogy', 'College of Informatics and Computing Sciences');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbstudinfo`
+--
+
+DROP TABLE IF EXISTS `tbstudinfo`;
+CREATE TABLE IF NOT EXISTS `tbstudinfo` (
+  `studid` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `firstname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lastname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `course` text NOT NULL,
+  PRIMARY KEY (`studid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbstudinfo`
+--
+
+INSERT INTO `tbstudinfo` (`studid`, `firstname`, `lastname`, `course`) VALUES
+('21-35608', 'Maria Andrea', 'De Leon', 'BSIT'),
+('21-34693', 'Queenie', 'Manigbas', 'BSIT BA'),
+('21-38479', 'Simone Louis', 'De Villa', 'BSIT'),
+('21-35459', 'Irish', 'Suarez', 'BSIT'),
+('21-33827', 'Maureen', 'Lozares', 'BSIT');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbsubject`
+--
+
+DROP TABLE IF EXISTS `tbsubject`;
+CREATE TABLE IF NOT EXISTS `tbsubject` (
+  `subjectid` int NOT NULL,
+  `subjectcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subjectname` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`subjectid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbsubject`
+--
+
+INSERT INTO `tbsubject` (`subjectid`, `subjectcode`, `subjectname`) VALUES
+(1, 'BAT 401', 'Fundamentals of Business Analytics'),
+(2, 'BAT 402', 'Fundamentals of Analytics Modeling'),
+(3, 'IT 311', 'Administration and Maintenance'),
+(4, 'IT 312', 'Systems Integration and Architecture'),
+(5, 'IT 313', 'System Analysis and Design'),
+(6, 'GED 107', 'Ethics'),
+(7, 'IT 314', 'Web Systems and Technologies');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbviolationreport`
+--
+
+DROP TABLE IF EXISTS `tbviolationreport`;
+CREATE TABLE IF NOT EXISTS `tbviolationreport` (
+  `violationid` int NOT NULL AUTO_INCREMENT,
+  `studid` int NOT NULL,
+  `empid` int NOT NULL,
+  `violationtypeid` int NOT NULL,
+  `violationdate` date NOT NULL,
+  `violationtime` time NOT NULL,
+  `remarks` varchar(255) NOT NULL,
+  `evidence` varchar(255) NOT NULL,
+  `status` varchar(10) NOT NULL,
+  PRIMARY KEY (`violationid`),
+  KEY `studid_fk_violationreport` (`studid`),
+  KEY `empid_fk_violationreport` (`empid`),
+  KEY `violationtypeid_fk_violationreport` (`violationtypeid`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbviolationtypes`
+--
+
+DROP TABLE IF EXISTS `tbviolationtypes`;
+CREATE TABLE IF NOT EXISTS `tbviolationtypes` (
+  `violationtypeid` int NOT NULL AUTO_INCREMENT,
+  `violationame` varchar(100) NOT NULL,
+  `violationlevel` varchar(20) NOT NULL,
+  `firstoffense` varchar(255) NOT NULL,
+  `secondoffense` varchar(255) NOT NULL,
+  `thirdoffense` varchar(255) NOT NULL,
+  PRIMARY KEY (`violationtypeid`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tbviolationtypes`
+--
+
+INSERT INTO `tbviolationtypes` (`violationtypeid`, `violationame`, `violationlevel`, `firstoffense`, `secondoffense`, `thirdoffense`) VALUES
+(1, 'Intoxication of Alcohol', 'Major', 'Three- to five-day suspension (3-5)', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission'),
+(2, 'Smoking', 'Major', 'Three- to five-day suspension (3-5)\r\n', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission '),
+(3, 'Gambling', 'Major', 'Three- to five-day suspension (3-5)', 'Five- to seven-day suspension (5-7), may include Re-admission Probation', 'Seven- to nine-day suspension (7-9), may include Non-readmission '),
+(4, 'Cutting Class', 'Minor', 'Written Warning', 'Written Reprimand', 'One-day suspension'),
+(5, 'Public Display of Affection', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension may include Disciplinary Probation\r\n'),
+(6, 'Improper Uniform / Dress Code', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(7, 'Misbehavior', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(8, 'Provocation to a fight ', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(9, 'Disturbance', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(10, 'Unauthorized removals', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(11, 'Breaking into a class', 'Minor', 'Written Reprimand', 'Written Reprimand to One-day suspension', 'Two-day suspension, may include Disciplinary Probation\r\n'),
+(12, 'Membership to unrecognized organization', 'Major', 'Three- to six-day suspension (3-6)', 'Six- to eight-day suspension (6-8), may include \r\nRe-admission Probation', 'Eight- to ten-day suspension (8-10), may \r\ninclude Non-readmission'),
+(13, 'Destructive acts', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(14, 'Bringing bladed objects', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(15, 'Acts with slight physical injury', 'Major', 'Four- to eight-day suspension (4-8)', 'Eight- to ten-day suspension (8-10), may include Re-admission Probation', 'Ten- to twelve-day suspension (10-12), may include Non-readmission'),
+(16, 'Bribery', 'Major', 'Six- to ten-day suspension (6-10), may include Non-readmission', 'Ten- to twelve-day suspension (10-12), may include Non-readmission', 'Twelve- to fourteen-day suspension (12-14), may include Non-readmission\r\n'),
+(17, 'Acts with serious physical injury', 'Major', 'Eight- to twelve-day suspension (8-12), may include Non-readmission', 'Twelve- fourteen-day suspension (12-14), may include Non-readmission', 'Fourteen- to sixteen-day suspension (14-16), may include Non-readmission'),
+(18, 'Obstructive Protesting', 'Major', 'Ten to fourteen day suspension (10 -14), may \r\ninclude Non-readmission', 'Fifteen to seventeen day suspension (15-17), may include Non-readmission', 'Eighteen to twenty day suspension (18-20), may include Non-readmission '),
+(19, 'Academic dishonesty', 'Major', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension', 'Grade of zero (0) in the test/exam/requirement and one-day (1) suspension');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_admin`
+--
+
+DROP TABLE IF EXISTS `tb_admin`;
+CREATE TABLE IF NOT EXISTS `tb_admin` (
+  `adminID` int NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('Admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`adminID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_admin`
+--
+
+INSERT INTO `tb_admin` (`adminID`, `fullname`, `email`, `password`, `role`) VALUES
+(1, 'Medrano, Ivan D.', 'admin@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(2, 'Admin name', 'admin2@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(3, 'Bautista, Chris John L.', 'bautista@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(4, 'Panaligan, Jomari M.', 'panaligan@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(5, 'Hernandez, Marc Andrei L.', 'hernandez@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin'),
+(6, 'Mendoza, Harvey L.', 'mendoza@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_client`
+--
+
+DROP TABLE IF EXISTS `tb_client`;
+CREATE TABLE IF NOT EXISTS `tb_client` (
+  `clientID` int NOT NULL AUTO_INCREMENT,
+  `studid` int NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('Client') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`clientID`),
+  KEY `studid` (`studid`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_client`
+--
+
+INSERT INTO `tb_client` (`clientID`, `studid`, `email`, `password`, `role`) VALUES
+(1, 1, 'parker@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client'),
+(2, 2, 'kent@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Client');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_empinfo`
+--
+
+DROP TABLE IF EXISTS `tb_empinfo`;
+CREATE TABLE IF NOT EXISTS `tb_empinfo` (
+  `empid` int NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `firstname` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `department` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_empinfo`
+--
+
+INSERT INTO `tb_empinfo` (`empid`, `lastname`, `firstname`, `department`) VALUES
+(1, 'aguila', 'nina', 'cics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_librarian`
+--
+
+DROP TABLE IF EXISTS `tb_librarian`;
+CREATE TABLE IF NOT EXISTS `tb_librarian` (
+  `librarianID` int NOT NULL AUTO_INCREMENT,
+  `empid` int NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('Librarian') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`librarianID`),
+  KEY `empid` (`empid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_librarian`
+--
+
+INSERT INTO `tb_librarian` (`librarianID`, `empid`, `email`, `password`, `role`) VALUES
+(1, 1, 'aguila@g', '$2y$10$7WBXttrmFnqyZgP/w3hQCuj1UFGktv.zrkE7vVALTOhiOQa.LSSFq', 'Librarian');
 
 -- --------------------------------------------------------
 
@@ -278,9 +1477,10 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
   `studid` int NOT NULL AUTO_INCREMENT,
   `lastname` varchar(25) NOT NULL,
   `firstname` varchar(25) NOT NULL,
-  `course` varchar(20) NOT NULL,
-  PRIMARY KEY (`studid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `course` varchar(255) NOT NULL,
+  PRIMARY KEY (`studid`),
+  KEY `course_fk_studinfo` (`course`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tb_studinfo`
@@ -289,6 +1489,58 @@ CREATE TABLE IF NOT EXISTS `tb_studinfo` (
 INSERT INTO `tb_studinfo` (`studid`, `lastname`, `firstname`, `course`) VALUES
 (1, 'parker', 'peter', 'bsit'),
 (2, 'kent', 'clark', 'bscs');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_users`
+--
+
+DROP TABLE IF EXISTS `tb_users`;
+CREATE TABLE IF NOT EXISTS `tb_users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `studid` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `studid_g9` (`studid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_users`
+--
+
+INSERT INTO `tb_users` (`id`, `username`, `email`, `password`, `studid`) VALUES
+(1, 'user', 'user123@gmail.com', 'ee11cbb19052e40b07aac0ca060c23ee', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `userId` int NOT NULL AUTO_INCREMENT,
+  `userName` varchar(255) NOT NULL,
+  `userRole` varchar(255) NOT NULL,
+  `passwordHash` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `userImage` varchar(255) DEFAULT NULL,
+  `empid` int DEFAULT NULL,
+  PRIMARY KEY (`userId`),
+  KEY `fk_empid` (`empid`)
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`userId`, `userName`, `userRole`, `passwordHash`, `firstName`, `lastName`, `userImage`, `empid`) VALUES
+(45, 'remover', 'equipment remover', '$2y$10$ORIaWsSqMhOwv0FP3ChLc.2hS2.BUi44BW00x1tjTOIdcN/.jhR3O', 'John', 'Doe', 'user_images/6565faa6208f1_ericka_img.png', 2),
+(40, 'admin', 'admin', '$2y$10$8Qtz/TaSGCMmcfI1lQLd4uGQCzI4QKesE5uDFbSDGW3pgMAUd/xe2', 'nina', 'aguila', 'user_images/6565e57919e43_mig_img.png', 1);
 
 -- --------------------------------------------------------
 
@@ -353,7 +1605,106 @@ INSERT INTO `visitor_infotbl` (`visitor_no`, `visitor_name`, `visitor_add`, `vis
 -- Constraints for table `account_tbl`
 --
 ALTER TABLE `account_tbl`
-  ADD CONSTRAINT `account_tbl_ibfk_1` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
+  ADD CONSTRAINT `account_admin_id` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `admin`
+--
+ALTER TABLE `admin`
+  ADD CONSTRAINT `adminid_g9` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `instocks_details`
+--
+ALTER TABLE `instocks_details`
+  ADD CONSTRAINT `instocks_details_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `in_stocks`
+--
+ALTER TABLE `in_stocks`
+  ADD CONSTRAINT `in_stocks_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `outstocks_details`
+--
+ALTER TABLE `outstocks_details`
+  ADD CONSTRAINT `outstocks_details_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tbadminaccount`
+--
+ALTER TABLE `tbadminaccount`
+  ADD CONSTRAINT `empid_fk_adminaccount` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`);
+
+--
+-- Constraints for table `tbappeal`
+--
+ALTER TABLE `tbappeal`
+  ADD CONSTRAINT `violationid_fk_appeal` FOREIGN KEY (`violationid`) REFERENCES `tbviolationreport` (`violationid`);
+
+--
+-- Constraints for table `tbhrstaff`
+--
+ALTER TABLE `tbhrstaff`
+  ADD CONSTRAINT `empid_fk_hrstaff` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `tbjobapplication`
+--
+ALTER TABLE `tbjobapplication`
+  ADD CONSTRAINT `appstatus_fk_jobapplication` FOREIGN KEY (`appstatus`) REFERENCES `tbappstatus` (`statusname`),
+  ADD CONSTRAINT `jobtitle_fk_jobapplication` FOREIGN KEY (`jobtitle`) REFERENCES `tbjobs` (`jobtitle`);
+
+--
+-- Constraints for table `tbjobs`
+--
+ALTER TABLE `tbjobs`
+  ADD CONSTRAINT `departmentname_fk_jobs` FOREIGN KEY (`departmentname`) REFERENCES `tbdepartment` (`deptname`);
+
+--
+-- Constraints for table `tbl_student`
+--
+ALTER TABLE `tbl_student`
+  ADD CONSTRAINT `tbl_student_ibfk_1` FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`);
+
+--
+-- Constraints for table `tbl_studentlogs`
+--
+ALTER TABLE `tbl_studentlogs`
+  ADD CONSTRAINT `tbl_studentlogs_ibfk_1` FOREIGN KEY (`SrCode`) REFERENCES `tbl_student` (`SrCode`);
+
+--
+-- Constraints for table `tbstudentaccount`
+--
+ALTER TABLE `tbstudentaccount`
+  ADD CONSTRAINT `studid_fk_studentaccount` FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`);
+
+--
+-- Constraints for table `tbviolationreport`
+--
+ALTER TABLE `tbviolationreport`
+  ADD CONSTRAINT `empid_fk_violationreport` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`),
+  ADD CONSTRAINT `studid_fk_violationreport` FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`),
+  ADD CONSTRAINT `violationtypeid_fk_violationreport` FOREIGN KEY (`violationtypeid`) REFERENCES `tbviolationtypes` (`violationtypeid`);
+
+--
+-- Constraints for table `tb_client`
+--
+ALTER TABLE `tb_client`
+  ADD CONSTRAINT `clientid` FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `tb_librarian`
+--
+ALTER TABLE `tb_librarian`
+  ADD CONSTRAINT `librarianid` FOREIGN KEY (`empid`) REFERENCES `tbempinfo` (`empid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `tb_users`
+--
+ALTER TABLE `tb_users`
+  ADD CONSTRAINT `studid_g9` FOREIGN KEY (`studid`) REFERENCES `tb_studinfo` (`studid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `visiting_infotbl`
