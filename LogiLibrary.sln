@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LogiLibrary", "LogiLibrary\LogiLibrary.vbproj", "{10C97BC4-7116-4A04-B524-31B7B1F94C36}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LogiLibrary setup", "LogiLibrary setup\LogiLibrary setup.vdproj", "{C320796E-3ADE-486C-9856-8EA37815B64B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10C97BC4-7116-4A04-B524-31B7B1F94C36}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{10C97BC4-7116-4A04-B524-31B7B1F94C36}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{10C97BC4-7116-4A04-B524-31B7B1F94C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10C97BC4-7116-4A04-B524-31B7B1F94C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C320796E-3ADE-486C-9856-8EA37815B64B}.Debug|Any CPU.ActiveCfg = Debug
+		{C320796E-3ADE-486C-9856-8EA37815B64B}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE7B7C6D-F66C-4BE1-B331-2CD93366E890}
+	EndGlobalSection
+EndGlobal
