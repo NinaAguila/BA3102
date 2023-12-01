@@ -1,0 +1,260 @@
+/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: var(--poppins);
+	overflow: hidden;
+}
+
+a {
+	text-decoration: none;
+}
+
+li {
+	list-style: none;
+}
+
+:root {
+	--poppins: 'Poppins', sans-serif;
+	--lato: 'Lato', sans-serif;
+	--darkred: #a50113;
+	--reddish: #c10206;
+	--light: #F9F9F9;
+	--blue: #3C91E6;
+	--light-blue: #CFE8FF;
+	--grey: #eee;
+	--dark-grey: #AAAAAA;
+	--dark: #342E37;
+	--red: #DB504A;
+	--yellow: #FFCE26;
+	--light-yellow: #FFF2C6;
+	--orange: #FD7238;
+	--light-orange: #FFE0D3;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+body.dark {
+	--light: #202225;
+	--grey: #292b2f;
+	--dark: #FBFBFB;
+}
+
+body {
+	background: var(--grey);
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+/* SIDEBAR */
+#sidebar {
+	position: fixed;
+    top: 0;
+	left: 0;
+	width: 280px;
+	height: 100%;
+	background: var(--light);
+	font-family: var(--lato);
+	overflow-x: hidden;
+	scrollbar-width: none;
+	
+	overflow: hidden;
+}
+#sidebar::--webkit-scrollbar {
+	display: none;
+}
+#sidebar.hide {
+	width: 60px;
+	}
+#sidebar .brand{
+	font-size: 24px;
+	font-weight: 700;
+	height: 56px;
+	display: flex;
+	align-items: center;
+	color: var(--reddish);
+	background: var(--light);
+	z-index: 5;
+	gap: 30px;
+	padding-left: 14px;
+	padding-bottom: 20px;
+	box-sizing: content-box;
+
+}
+
+
+
+#sidebar .brand .bx {
+	min-width: 60px;
+}
+
+
+#sidebar .side-menu {
+	width: 100%;
+	height: 80%;
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+#sidebar .side-menu li {
+	height: 48px;
+	background: transparent;
+	margin-left: 6px;
+	border-radius: 48px 0 0 48px;
+	padding: 4px;
+	overflow: hidden;
+}
+#sidebar .side-menu li.active {
+	position: relative;
+}
+#sidebar .side-menu li.active::before {
+	content: '';
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	
+	top: -40px;
+
+	z-index: -1;
+}
+#sidebar .side-menu li.active::after {
+	content: '';
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	
+	bottom: -40px;
+	
+	z-index: -1;
+}
+#sidebar .side-menu li a {
+	width: 100%;
+	height: 100%;
+	background: var(--light);
+	display: flex;
+	align-items: center;
+	border-radius: 10px;
+	font-size: 16px;
+	color: var(--dark);
+	white-space: nowrap;
+}
+
+#sidebar .side-menu li:last-of-type{
+	margin-top: auto;
+	border-bottom: none;
+}
+#sidebar .side-menu.top li.active a {
+	color: var(--light);
+    background-color: var(--darkred);
+}
+
+#sidebar .side-menu.top li.active a:hover {
+	color: var(--light);
+}
+
+#sidebar.hide .side-menu li a {
+	width: calc(48px - (4px * 2));
+	transition: width .3s ease;
+	}
+#sidebar .side-menu li a.logout {
+	color: var(--red);
+}
+#sidebar .side-menu.top li a:hover {
+	color: var(--reddish);
+}
+#sidebar .side-menu li a .bx {
+	min-width: calc(60px  - ((4px + 6px) * 2));
+	display: flex;
+	justify-content: center;
+}
+
+
+/* SIDEBAR */
+
+
+
+
+/* CONTENT */
+#content {
+	position: relative;
+	width: calc(100% - 280px);
+	left: 280px;
+	transition: .3s ease;
+}
+#sidebar.hide ~ #content {
+	width: calc(100% - 60px);
+	left: 60px;
+}
+
+
+
+
+/* NAVBAR */
+#content nav {
+	height: 56px;
+	background: var(--light);
+	padding: 0 24px;
+	display: none;
+	align-items: center;
+	grid-gap: 24px;
+	font-family: var(--lato);
+	position: sticky;
+	top: 0;
+	left: 0;
+	z-index: 9;
+}
+#content nav::before {
+	content: '';
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	bottom: -40px;
+	left: 0;
+	border-radius: 50%;
+	box-shadow: -20px -20px 0 var(--light);
+}
+#content nav a {
+	color: var(--dark);
+}
+#content nav .bx.bx-menu {
+	cursor: pointer;
+	color: var(--dark);
+}
+#content nav .nav-link {
+	font-size: 16px;
+	transition: .3s ease;
+}
+#content nav .nav-link:hover {
+	color: var(--reddish);
+}
+
+/* NAVBAR */
+
+@media screen and (max-width: 768px) {
+	#sidebar {
+		width: 54px;
+		transition: .3s ease;
+		padding-right: 1px;
+	}
+
+	#content {
+		width: calc(100% - 60px);
+		left: 70px;
+		padding-right: 30px;
+	}
+
+	#sidebar .brand #logo-img{
+		position: fixed;
+	}
+
+	#sidebar .brand span{
+		color: transparent;
+	}
+}
+
